@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maharashtra Election Prediction 2027</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">🗳️ Maharashtra Election Predictor</h1>
+            <p class="tagline">AI-Powered Rajya Sabha Election Forecasting</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            
+            <!-- Loading State -->
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Analyzing election data...</p>
+            </div>
+
+            <!-- Winner Section -->
+            <section id="winner-section" class="winner-section hidden">
+                <div class="winner-card">
+                    <div class="trophy">🏆</div>
+                    <h2 class="winner-title">Predicted Winner 2027</h2>
+                    <div class="winner-party" id="winner-party">BJP</div>
+                    <div class="winner-probability">
+                        <span class="probability-label">Win Probability</span>
+                        <span class="probability-value" id="winner-probability">85.23%</span>
+                    </div>
+                    <div class="winner-stats">
+                        <div class="stat">
+                            <span class="stat-label">MLA Strength</span>
+                            <span class="stat-value" id="winner-mla">132</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Alliance Strength</span>
+                            <span class="stat-value" id="winner-alliance">132</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Runner-up Badge -->
+                <div class="runner-up-badge" id="runner-up-badge">
+                    <span class="medal">🥈</span>
+                    <span>Runner-up: <strong id="runner-up-party">NCP</strong> (<span id="runner-up-probability">64.62%</span>)</span>
+                </div>
+            </section>
+
+            <!-- All Parties Comparison -->
+            <section class="parties-section">
+                <h2 class="section-title">All Party Predictions</h2>
+                <div class="parties-grid" id="parties-grid">
+                    <!-- Party cards will be dynamically inserted here -->
+                </div>
+            </section>
+
+            <!-- Model Info -->
+            <section class="info-section">
+                <div class="info-card">
+                    <h3>About This Prediction</h3>
+                    <p>This prediction is powered by a <strong>Logistic Regression</strong> machine learning model trained on historical Maharashtra Rajya Sabha election data from 2014-2024.</p>
+                    <div class="info-stats">
+                        <div class="info-stat">
+                            <span class="info-stat-icon">📊</span>
+                            <span class="info-stat-text">Based on <strong>31</strong> historical records</span>
+                        </div>
+                        <div class="info-stat">
+                            <span class="info-stat-icon">🎯</span>
+                            <span class="info-stat-text">Model trained on <strong>5</strong> key features</span>
+                        </div>
+                        <div class="info-stat">
+                            <span class="info-stat-icon">⚡</span>
+                            <span class="info-stat-text">Real-time predictions</span>
+                        </div>
+                    </div>
+                    <p class="disclaimer">⚠️ <em>Note: Predictions are based on historical data and current political strength. Actual results may vary based on political alliances and other factors.</em></p>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2027 Maharashtra Election Prediction System | Powered by Machine Learning</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
