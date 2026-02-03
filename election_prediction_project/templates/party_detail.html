@@ -38,31 +38,45 @@ statistics{% endblock %}
             </div>
 
             <!-- Historical Performance -->
-            <h3 style="font-size: 1.5rem; margin-bottom: 20px; color: #333;">📈 Historical Performance</h3>
+            <h3 style="font-size: 1.5rem; margin-bottom: 20px; color: white;">📈 Historical Performance</h3>
             <div style="overflow-x: auto;">
                 <table style="width: 100%; border-collapse: collapse;">
                     <thead>
-                        <tr style="background: #f8f9fa;">
-                            <th style="padding: 12px; text-align: left; border-bottom: 2px solid #667eea;">Year</th>
-                            <th style="padding: 12px; text-align: center; border-bottom: 2px solid #667eea;">MLA
+                        <tr style="background: rgba(52, 152, 219, 0.2);">
+                            <th
+                                style="padding: 12px; text-align: left; border-bottom: 2px solid #3498db; color: white;">
+                                Year</th>
+                            <th
+                                style="padding: 12px; text-align: center; border-bottom: 2px solid #3498db; color: white;">
+                                MLA
                                 Strength</th>
-                            <th style="padding: 12px; text-align: center; border-bottom: 2px solid #667eea;">Alliance
+                            <th
+                                style="padding: 12px; text-align: center; border-bottom: 2px solid #3498db; color: white;">
+                                Alliance
                                 Strength</th>
-                            <th style="padding: 12px; text-align: center; border-bottom: 2px solid #667eea;">RS Wins
+                            <th
+                                style="padding: 12px; text-align: center; border-bottom: 2px solid #3498db; color: white;">
+                                RS Wins
                             </th>
-                            <th style="padding: 12px; text-align: center; border-bottom: 2px solid #667eea;">Result</th>
+                            <th
+                                style="padding: 12px; text-align: center; border-bottom: 2px solid #3498db; color: white;">
+                                Result</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for record in party.historical_data %}
-                        <tr style="border-bottom: 1px solid #f0f0f0;">
-                            <td style="padding: 12px; font-weight: 600;">{{ record.year }}</td>
-                            <td style="padding: 12px; text-align: center;">{{ record.mla_strength }}</td>
-                            <td style="padding: 12px; text-align: center;">{{ record.alliance_mla_strength }}</td>
-                            <td style="padding: 12px; text-align: center;">{{ record.past_rs_wins }}</td>
+                        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                            <td style="padding: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.95);">{{
+                                record.year }}</td>
+                            <td style="padding: 12px; text-align: center; color: rgba(255, 255, 255, 0.85);">{{
+                                record.mla_strength }}</td>
+                            <td style="padding: 12px; text-align: center; color: rgba(255, 255, 255, 0.85);">{{
+                                record.alliance_mla_strength }}</td>
+                            <td style="padding: 12px; text-align: center; color: rgba(255, 255, 255, 0.85);">{{
+                                record.past_rs_wins }}</td>
                             <td style="padding: 12px; text-align: center;">
                                 {% if record.winner == 1 %}
-                                <span style="color: #27ae60; font-weight: 700;">✓ Win</span>
+                                <span style="color: #2ecc71; font-weight: 700;">✓ Win</span>
                                 {% else %}
                                 <span style="color: #e74c3c; font-weight: 700;">✗ Loss</span>
                                 {% endif %}

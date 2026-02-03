@@ -92,7 +92,7 @@ function showError(message) {
     const partiesGrid = document.getElementById('partiesGrid');
     partiesGrid.innerHTML = `
         <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
-            <div style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <div style="background: rgba(44, 62, 80, 0.95); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);">
                 <div style="font-size: 3rem; margin-bottom: 15px;">⚠️</div>
                 <div style="color: #e74c3c; font-size: 1.2rem; font-weight: 600;">${message}</div>
             </div>

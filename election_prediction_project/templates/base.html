@@ -16,7 +16,9 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="/" class="nav-logo">
-                🗳️ Election Predictor
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Election Predictor Logo"
+                    class="nav-logo-img">
+                <span>Election Predictor</span>
             </a>
 
             <!-- Hamburger Menu for Mobile -->
@@ -54,13 +56,14 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <p>&copy; 2027 Election Outcome Prediction System | Powered by Machine Learning</p>
-        </div>
+        <p>© 2025 Election Outcome Prediction System | Powered by Machine Learning</p>
+        <p>Historical Data: 1952-2024 | AI-Powered Forecasting</p>
     </footer>
 
-    <!-- Base JavaScript -->
+    <!-- Navigation JavaScript -->
     <script src="{{ url_for('static', filename='js/navigation.js') }}"></script>
+
+    <!-- Page-specific JavaScript -->
     {% block extra_js %}{% endblock %}
 </body>
 
