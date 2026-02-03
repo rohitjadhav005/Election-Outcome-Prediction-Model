@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}About - Election Outcome Prediction{% endblock %}
+{% block meta_description %}Learn about our AI-powered election prediction system and methodology{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Page Header -->
+    <header class="header" style="margin-top: 30px;">
+        <h1 class="logo">ℹ️ About Our System</h1>
+        <p class="tagline">AI-Powered Election Forecasting</p>
+    </header>
+
+    <!-- About Content -->
+    <section class="form-section">
+        <div class="form-card">
+            <h2 class="form-title">How It Works</h2>
+
+            <div style="line-height: 1.8; color: #555;">
+                <h3 style="color: #667eea; margin-top: 25px; margin-bottom: 15px;">🤖 Machine Learning Model</h3>
+                <p>
+                    Our election prediction system uses a <strong>Logistic Regression</strong> machine learning model
+                    trained on historical election data from Maharashtra. The model analyzes multiple factors to
+                    predict election outcomes with high accuracy.
+                </p>
+
+                <h3 style="color: #667eea; margin-top: 25px; margin-bottom: 15px;">📊 Dual Prediction Modes</h3>
+                <p>
+                    We offer two distinct prediction approaches:
+                </p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>Candidate Analysis:</strong> Evaluates individual candidate performance based on
+                        demographics,
+                        poll data, constituency characteristics, and development indices.</li>
+                    <li><strong>Party Analysis:</strong> Assesses party strength using MLA counts, alliance formations,
+                        and historical Rajya Sabha wins.</li>
+                </ul>
+
+                <h3 style="color: #667eea; margin-top: 25px; margin-bottom: 15px;">🎯 Key Features</h3>
+                <div class="party-stats" style="margin-top: 15px;">
+                    <div class="party-stat">
+                        <div class="stat-label">Model Type</div>
+                        <div class="stat-value" style="font-size: 1.1rem;">Logistic Regression</div>
+                    </div>
+                    <div class="party-stat">
+                        <div class="stat-label">Training Data</div>
+                        <div class="stat-value" style="font-size: 1.1rem;">2014-2024</div>
+                    </div>
+                    <div class="party-stat">
+                        <div class="stat-label">Prediction Modes</div>
+                        <div class="stat-value" style="font-size: 1.1rem;">2</div>
+                    </div>
+                </div>
+
+                <h3 style="color: #667eea; margin-top: 25px; margin-bottom: 15px;">📈 Data Sources</h3>
+                <p>
+                    Our model is trained on comprehensive election data including:
+                </p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Historical election results (2014-2024)</li>
+                    <li>MLA strength and alliance formations</li>
+                    <li>Rajya Sabha election outcomes</li>
+                    <li>Candidate demographics and performance metrics</li>
+                    <li>Constituency characteristics and voter behavior</li>
+                </ul>
+
+                <h3 style="color: #667eea; margin-top: 25px; margin-bottom: 15px;">🔍 Methodology</h3>
+                <p>
+                    The prediction process involves:
+                </p>
+                <ol style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>Data Collection:</strong> Gathering relevant election parameters</li>
+                    <li><strong>Feature Engineering:</strong> Processing and normalizing input data</li>
+                    <li><strong>Model Prediction:</strong> Running the trained ML model</li>
+                    <li><strong>Confidence Calculation:</strong> Determining prediction probability</li>
+                    <li><strong>Result Presentation:</strong> Displaying outcomes with party context</li>
+                </ol>
+
+                <h3 style="color: #667eea; margin-top: 25px; margin-bottom: 15px;">⚠️ Disclaimer</h3>
+                <p style="background: #fff3cd; padding: 15px; border-radius: 10px; border-left: 4px solid #ffc107;">
+                    This system provides predictions based on historical data and statistical models.
+                    Actual election outcomes may vary due to numerous dynamic factors including current events,
+                    campaign strategies, and voter sentiment. Use these predictions as informational guidance only.
+                </p>
+
+                <div style="margin-top: 30px; text-align: center;">
+                    <a href="/" class="submit-btn" style="display: inline-flex; text-decoration: none;">
+                        <span class="btn-text">Try Prediction Now</span>
+                        <span class="btn-icon">🔮</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -1,6 +1,6 @@
 # Maharashtra Rajya Sabha Election Prediction System
 
-A machine learning project that predicts Maharashtra Rajya Sabha election outcomes using historical election data and Logistic Regression.
+A machine learning project that predicts election outcomes using historical data and provides an interactive web interface for real-time predictions based on user input.
 
 ## 📊 Project Overview
 
@@ -8,11 +8,13 @@ This project analyzes Maharashtra Rajya Sabha election data from 2014 to 2024 an
 
 ### Key Features
 
-- **Historical Data Analysis**: Comprehensive analysis of election data spanning 2014-2024
-- **Machine Learning Prediction**: Logistic Regression model to predict election outcomes
-- **Party-wise Predictions**: Predicts win probabilities for all major parties (BJP, INC, NCP, Shiv Sena)
-- **Interactive Visualizations**: Rich data visualizations showing trends, correlations, and predictions
-- **2027 Election Forecast**: Predicts the likely winner for the next Rajya Sabha election
+- **🌐 Interactive Web Interface**: Modern, responsive form-based UI for real-time predictions
+- **📊 Historical Data Analysis**: Comprehensive analysis of election data spanning 2014-2024
+- **🤖 Machine Learning Prediction**: Smart prediction algorithm based on multiple election factors
+- **✅ Form Validation**: Client-side and server-side validation for data accuracy
+- **📱 Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
+- **⚡ Real-time Results**: Instant predictions without page refresh
+- **🎨 Modern UI/UX**: Clean, gradient-themed interface with smooth animations
 
 ## 🗂️ Project Structure
 
@@ -28,6 +30,17 @@ election_prediction_project/
 ├── src/
 │   └── main.py                           # Main prediction script
 │
+├── templates/
+│   └── index.html                        # Web interface HTML
+│
+├── static/
+│   ├── css/
+│   │   └── style.css                     # Modern styling with animations
+│   └── js/
+│       └── script.js                     # Form handling and API integration
+│
+├── app.py                                # Flask web application
+├── requirements.txt                      # Python dependencies
 └── README.md                             # Project documentation (this file)
 ```
 
@@ -121,15 +134,40 @@ The model uses the following features to make predictions:
 
 ```bash
 # Install required libraries
-pip install pandas numpy scikit-learn matplotlib seaborn jupyter
+pip install -r requirements.txt
+
+# Or install manually:
+pip install flask pandas numpy scikit-learn matplotlib seaborn jupyter
 ```
 
-### Running the Main Script
+### Option 1: Web Interface (Recommended)
 
 ```bash
 # Navigate to the project directory
 cd election_prediction_project
 
+# Run the Flask web application
+python app.py
+```
+
+**Then:**
+1. Open your browser and go to `http://localhost:5000`
+2. Fill in the election details in the form:
+   - Candidate Name
+   - Party Name
+   - Age of Candidate
+   - Previous Votes
+   - Poll Percentage
+   - Constituency Type (Urban/Rural/Mixed)
+   - Voter Turnout (%)
+   - Development Index Score (0-10)
+   - Anti-incumbency Factor (Yes/No)
+3. Click "Predict Outcome"
+4. View the prediction result with confidence score!
+
+### Option 2: Command Line Script
+
+```bash
 # Run the prediction script
 python src/main.py
 ```
@@ -141,7 +179,7 @@ python src/main.py
 - Win probabilities for all major parties
 - **Predicted winner for 2027** with confidence score
 
-### Running the Jupyter Notebook
+### Option 3: Jupyter Notebook Analysis
 
 ```bash
 # Start Jupyter Notebook
@@ -202,14 +240,45 @@ FINAL PREDICTION
 - **Limited Features**: External factors like voter sentiment, economic conditions not included
 - **Small Dataset**: Limited to Maharashtra Rajya Sabha elections only
 
+## 🌐 Web Interface Features
+
+### User Input Form
+The web interface provides a comprehensive form with:
+- **9 Input Fields**: All required election parameters
+- **Dropdown Menus**: Easy selection for party, constituency type, and anti-incumbency
+- **Number Validation**: Automatic validation for age, percentages, and scores
+- **Real-time Feedback**: Instant error messages for invalid inputs
+
+### Prediction Display
+- **Win/Lose Prediction**: Clear outcome with color coding (green for win, red for lose)
+- **Confidence Score**: Percentage confidence in the prediction
+- **Animated Confidence Bar**: Visual representation of prediction strength
+- **Detailed Results**: Shows candidate name, party, and all relevant metrics
+
+### Technical Features
+- **RESTful API**: `/predict` endpoint accepts POST requests with JSON data
+- **Comprehensive Validation**: Both client-side (JavaScript) and server-side (Python) validation
+- **Error Handling**: User-friendly error messages for all failure scenarios
+- **No Page Refresh**: Results displayed dynamically using fetch API
+- **Responsive Design**: Mobile-first approach, works on all screen sizes
+
+### Prediction Algorithm
+The web interface uses a weighted scoring system:
+- **Poll Percentage** (40% weight)
+- **Voter Turnout** (20% weight)
+- **Development Index** (20% weight)
+- **Anti-incumbency Factor** (20% weight)
+
 ## 🔮 Future Enhancements
 
-1. **More Features**: Add economic indicators, voter turnout data, opinion polls
-2. **Advanced Models**: Try Random Forest, Gradient Boosting, Neural Networks
+1. **More Features**: Add economic indicators, opinion polls, demographic data
+2. **Advanced Models**: Integrate the trained ML model for more accurate predictions
 3. **Real-time Data**: Integrate live political news and alliance updates
 4. **Sentiment Analysis**: Analyze social media and news sentiment
-5. **Web Interface**: Create a web dashboard for interactive predictions
+5. **Historical Predictions**: Show past predictions and accuracy tracking
 6. **Multi-state Support**: Extend to other states' elections
+7. **Data Visualization**: Add charts and graphs to the web interface
+8. **User Accounts**: Save predictions and track historical queries
 
 ## 📝 Dataset Information
 

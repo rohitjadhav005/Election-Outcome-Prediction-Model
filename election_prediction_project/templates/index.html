@@ -1,100 +1,147 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maharashtra Election Prediction 2027</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <h1 class="logo">🗳️ Maharashtra Election Predictor</h1>
-            <p class="tagline">AI-Powered Rajya Sabha Election Forecasting</p>
-        </div>
+{% extends "base.html" %}
+
+{% block title %}Home - Election Outcome Prediction{% endblock %}
+{% block meta_description %}Predict election outcomes using AI-powered analysis of party data{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Page Header -->
+    <header class="header" style="margin-top: 30px;">
+        <h1 class="logo">🗳️ Election Outcome Predictor</h1>
+        <p class="tagline">AI-Powered Election Forecasting System</p>
     </header>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            
-            <!-- Loading State -->
-            <div id="loading" class="loading">
-                <div class="spinner"></div>
-                <p>Analyzing election data...</p>
+    <!-- Prediction Form Card -->
+    <section class="form-section">
+        <div class="form-card">
+            <h2 class="form-title">Predict Election Outcome</h2>
+            <p class="form-description">Enter party and candidate information to predict the election outcome</p>
+
+            <!-- Prediction Form -->
+            <form id="predictionForm" class="prediction-form">
+                <!-- Party Name -->
+                <div class="form-group">
+                    <label for="partyName" class="form-label">
+                        <span class="label-text">Party Name</span>
+                        <span class="required">*</span>
+                    </label>
+                    <select id="partyName" name="party_name" class="form-select" required>
+                        <option value="">Select a party</option>
+                        <option value="BJP">Bharatiya Janata Party (BJP)</option>
+                        <option value="INC">Indian National Congress (INC)</option>
+                        <option value="NCP">Nationalist Congress Party (NCP)</option>
+                        <option value="Shiv Sena">Shiv Sena</option>
+                        <option value="Independent">Independent</option>
+                    </select>
+                </div>
+
+                <!-- MLA Strength -->
+                <div class="form-group">
+                    <label for="mlaStrength" class="form-label">
+                        <span class="label-text">MLA Strength</span>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="number" id="mlaStrength" name="mla_strength" class="form-input"
+                        placeholder="Number of MLAs (e.g., 132)" min="0" required>
+                    <small style="color: #666; font-size: 0.85rem; margin-top: 5px; display: block;">
+                        Total number of MLAs the party has
+                    </small>
+                </div>
+
+                <!-- Alliance MLA Strength -->
+                <div class="form-group">
+                    <label for="allianceMlaStrength" class="form-label">
+                        <span class="label-text">Alliance MLA Strength</span>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="number" id="allianceMlaStrength" name="alliance_mla_strength" class="form-input"
+                        placeholder="Total MLAs in alliance (e.g., 132)" min="0" required>
+                    <small style="color: #666; font-size: 0.85rem; margin-top: 5px; display: block;">
+                        Total MLAs including alliance partners (same as MLA strength if no alliance)
+                    </small>
+                </div>
+
+                <!-- Past RS Wins -->
+                <div class="form-group">
+                    <label for="pastRsWins" class="form-label">
+                        <span class="label-text">Past Rajya Sabha Wins</span>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="number" id="pastRsWins" name="past_rs_wins" class="form-input"
+                        placeholder="Historical RS wins (e.g., 3)" min="0" required>
+                    <small style="color: #666; font-size: 0.85rem; margin-top: 5px; display: block;">
+                        Number of Rajya Sabha seats won previously
+                    </small>
+                </div>
+
+                <!-- Candidate Type -->
+                <div class="form-group">
+                    <label for="candidateType" class="form-label">
+                        <span class="label-text">Candidate Type</span>
+                        <span class="required">*</span>
+                    </label>
+                    <select id="candidateType" name="candidate_type" class="form-select" required>
+                        <option value="">Select candidate type</option>
+                        <option value="new">New Candidate</option>
+                        <option value="incumbent">Incumbent</option>
+                        <option value="mixed">Mixed</option>
+                    </select>
+                    <small style="color: #666; font-size: 0.85rem; margin-top: 5px; display: block;">
+                        New = First time, Incumbent = Re-election, Mixed = Combination
+                    </small>
+                </div>
+
+                <!-- Error Message -->
+                <div id="errorMessage" class="error-message hidden"></div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="btn-text">Predict Outcome</span>
+                    <span class="btn-icon">🔮</span>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Result Section -->
+    <section id="resultSection" class="result-section hidden">
+        <div class="result-card">
+            <div class="result-header">
+                <h3 class="result-title">Prediction Result</h3>
+                <button class="close-btn" onclick="resetForm()">✕</button>
             </div>
 
-            <!-- Winner Section -->
-            <section id="winner-section" class="winner-section hidden">
-                <div class="winner-card">
-                    <div class="trophy">🏆</div>
-                    <h2 class="winner-title">Predicted Winner 2027</h2>
-                    <div class="winner-party" id="winner-party">BJP</div>
-                    <div class="winner-probability">
-                        <span class="probability-label">Win Probability</span>
-                        <span class="probability-value" id="winner-probability">85.23%</span>
-                    </div>
-                    <div class="winner-stats">
-                        <div class="stat">
-                            <span class="stat-label">MLA Strength</span>
-                            <span class="stat-value" id="winner-mla">132</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-label">Alliance Strength</span>
-                            <span class="stat-value" id="winner-alliance">132</span>
-                        </div>
-                    </div>
+            <div class="result-content">
+                <div class="result-icon" id="resultIcon">🏆</div>
+                <div class="result-prediction" id="resultPrediction">Win</div>
+                <div class="result-details">
+                    <p class="result-party">
+                        <strong>Party:</strong> <span id="resultParty">-</span>
+                    </p>
+                    <p class="result-confidence">
+                        <strong>Win Probability:</strong> <span id="resultConfidence">-</span>%
+                    </p>
+                </div>
+                <div class="confidence-bar">
+                    <div class="confidence-fill" id="confidenceFill"></div>
                 </div>
 
-                <!-- Runner-up Badge -->
-                <div class="runner-up-badge" id="runner-up-badge">
-                    <span class="medal">🥈</span>
-                    <span>Runner-up: <strong id="runner-up-party">NCP</strong> (<span id="runner-up-probability">64.62%</span>)</span>
+                <!-- Party Information Box -->
+                <div id="partyInfoBox" class="party-info-box hidden">
+                    <div class="party-info-title">📊 Party Background</div>
+                    <div class="party-stats" id="partyStats"></div>
+                    <a href="#" id="viewPartyLink" class="view-party-btn">View Full Party Profile →</a>
                 </div>
-            </section>
+            </div>
 
-            <!-- All Parties Comparison -->
-            <section class="parties-section">
-                <h2 class="section-title">All Party Predictions</h2>
-                <div class="parties-grid" id="parties-grid">
-                    <!-- Party cards will be dynamically inserted here -->
-                </div>
-            </section>
-
-            <!-- Model Info -->
-            <section class="info-section">
-                <div class="info-card">
-                    <h3>About This Prediction</h3>
-                    <p>This prediction is powered by a <strong>Logistic Regression</strong> machine learning model trained on historical Maharashtra Rajya Sabha election data from 2014-2024.</p>
-                    <div class="info-stats">
-                        <div class="info-stat">
-                            <span class="info-stat-icon">📊</span>
-                            <span class="info-stat-text">Based on <strong>31</strong> historical records</span>
-                        </div>
-                        <div class="info-stat">
-                            <span class="info-stat-icon">🎯</span>
-                            <span class="info-stat-text">Model trained on <strong>5</strong> key features</span>
-                        </div>
-                        <div class="info-stat">
-                            <span class="info-stat-icon">⚡</span>
-                            <span class="info-stat-text">Real-time predictions</span>
-                        </div>
-                    </div>
-                    <p class="disclaimer">⚠️ <em>Note: Predictions are based on historical data and current political strength. Actual results may vary based on political alliances and other factors.</em></p>
-                </div>
-            </section>
-
+            <button class="new-prediction-btn" onclick="resetForm()">
+                Make Another Prediction
+            </button>
         </div>
-    </main>
+    </section>
+</div>
+{% endblock %}
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2027 Maharashtra Election Prediction System | Powered by Machine Learning</p>
-        </div>
-    </footer>
-
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-</body>
-</html>
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% endblock %}

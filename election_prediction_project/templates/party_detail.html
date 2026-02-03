@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}{{ party.party_name }} - Election Outcome Prediction{% endblock %}
+{% block meta_description %}Detailed information about {{ party.party_name }} including historical performance and
+statistics{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Party Header -->
+    <header class="header" style="margin-top: 30px;">
+        <h1 class="logo">{{ party.icon }} {{ party.party_name }}</h1>
+        <p class="tagline">{{ party.description }}</p>
+    </header>
+
+    <!-- Party Details Card -->
+    <section class="form-section">
+        <div class="form-card">
+            <h2 class="form-title">Party Statistics</h2>
+
+            <!-- Current Stats -->
+            <div class="party-stats" style="margin-bottom: 30px;">
+                <div class="party-stat">
+                    <div class="stat-label">Current MLA Strength</div>
+                    <div class="stat-value">{{ party.current_mla_strength }}</div>
+                </div>
+                <div class="party-stat">
+                    <div class="stat-label">Alliance Strength</div>
+                    <div class="stat-value">{{ party.current_alliance_strength }}</div>
+                </div>
+                <div class="party-stat">
+                    <div class="stat-label">Total RS Wins</div>
+                    <div class="stat-value">{{ party.total_rs_wins }}</div>
+                </div>
+                <div class="party-stat">
+                    <div class="stat-label">Win Rate</div>
+                    <div class="stat-value">{{ "%.1f"|format(party.win_rate) }}%</div>
+                </div>
+            </div>
+
+            <!-- Historical Performance -->
+            <h3 style="font-size: 1.5rem; margin-bottom: 20px; color: #333;">📈 Historical Performance</h3>
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f8f9fa;">
+                            <th style="padding: 12px; text-align: left; border-bottom: 2px solid #667eea;">Year</th>
+                            <th style="padding: 12px; text-align: center; border-bottom: 2px solid #667eea;">MLA
+                                Strength</th>
+                            <th style="padding: 12px; text-align: center; border-bottom: 2px solid #667eea;">Alliance
+                                Strength</th>
+                            <th style="padding: 12px; text-align: center; border-bottom: 2px solid #667eea;">RS Wins
+                            </th>
+                            <th style="padding: 12px; text-align: center; border-bottom: 2px solid #667eea;">Result</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in party.historical_data %}
+                        <tr style="border-bottom: 1px solid #f0f0f0;">
+                            <td style="padding: 12px; font-weight: 600;">{{ record.year }}</td>
+                            <td style="padding: 12px; text-align: center;">{{ record.mla_strength }}</td>
+                            <td style="padding: 12px; text-align: center;">{{ record.alliance_mla_strength }}</td>
+                            <td style="padding: 12px; text-align: center;">{{ record.past_rs_wins }}</td>
+                            <td style="padding: 12px; text-align: center;">
+                                {% if record.winner == 1 %}
+                                <span style="color: #27ae60; font-weight: 700;">✓ Win</span>
+                                {% else %}
+                                <span style="color: #e74c3c; font-weight: 700;">✗ Loss</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Predict with this Party Button -->
+            <div style="margin-top: 30px; text-align: center;">
+                <a href="/?party={{ party.party_name }}" class="submit-btn"
+                    style="display: inline-flex; text-decoration: none;">
+                    <span class="btn-text">Predict with {{ party.party_name }}</span>
+                    <span class="btn-icon">🔮</span>
+                </a>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
