@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Election Outcome Prediction{% endblock %}
+{% block meta_description %}Predict election outcomes using AI-powered analysis of party data{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Page Header -->
+    <header class="header" style="margin-top: 30px;">
+        <h1 class="logo">🗳️ Election Outcome Predictor</h1>
+        <p class="tagline">AI-Powered Election Forecasting System</p>
+    </header>
+
+    <!-- Prediction Form Card -->
+    <section class="form-section">
+        <div class="form-card">
+            <h2 class="form-title">Predict Election Outcome</h2>
+            <p class="form-description">Enter party and candidate information to predict the election outcome</p>
+
+            <!-- Prediction Form -->
+            <form id="predictionForm" class="prediction-form">
+                <!-- Party Name -->
+                <div class="form-group">
+                    <label for="partyName" class="form-label">
+                        <span class="label-text">Party Name</span>
+                        <span class="required">*</span>
+                    </label>
+                    <select id="partyName" name="party_name" class="form-select" required>
+                        <option value="">Select a party</option>
+                        <option value="BJP">Bharatiya Janata Party (BJP)</option>
+                        <option value="INC">Indian National Congress (INC)</option>
+                        <option value="NCP">Nationalist Congress Party (NCP)</option>
+                        <option value="Shiv Sena">Shiv Sena</option>
+                        <option value="Independent">Independent</option>
+                    </select>
+                </div>
+
+                <!-- MLA Strength -->
+                <div class="form-group">
+                    <label for="mlaStrength" class="form-label">
+                        <span class="label-text">MLA Strength</span>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="number" id="mlaStrength" name="mla_strength" class="form-input"
+                        placeholder="Number of MLAs (e.g., 132)" min="0" required>
+                    <small
+                        style="color: rgba(255, 255, 255, 0.7); font-size: 0.85rem; margin-top: 5px; display: block;">
+                        Total number of MLAs the party has
+                    </small>
+                </div>
+
+                <!-- Alliance MLA Strength -->
+                <div class="form-group">
+                    <label for="allianceMlaStrength" class="form-label">
+                        <span class="label-text">Alliance MLA Strength</span>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="number" id="allianceMlaStrength" name="alliance_mla_strength" class="form-input"
+                        placeholder="Total MLAs in alliance (e.g., 132)" min="0" required>
+                    <small
+                        style="color: rgba(255, 255, 255, 0.7); font-size: 0.85rem; margin-top: 5px; display: block;">
+                        Total MLAs including alliance partners (same as MLA strength if no alliance)
+                    </small>
+                </div>
+
+                <!-- Past RS Wins -->
+                <div class="form-group">
+                    <label for="pastRsWins" class="form-label">
+                        <span class="label-text">Past Rajya Sabha Wins</span>
+                        <span class="required">*</span>
+                    </label>
+                    <input type="number" id="pastRsWins" name="past_rs_wins" class="form-input"
+                        placeholder="Historical RS wins (e.g., 3)" min="0" required>
+                    <small
+                        style="color: rgba(255, 255, 255, 0.7); font-size: 0.85rem; margin-top: 5px; display: block;">
+                        Number of Rajya Sabha seats won previously
+                    </small>
+                </div>
+
+                <!-- Candidate Type -->
+                <div class="form-group">
+                    <label for="candidateType" class="form-label">
+                        <span class="label-text">Candidate Type</span>
+                        <span class="required">*</span>
+                    </label>
+                    <select id="candidateType" name="candidate_type" class="form-select" required>
+                        <option value="">Select candidate type</option>
+                        <option value="new">New Candidate</option>
+                        <option value="incumbent">Incumbent</option>
+                        <option value="mixed">Mixed</option>
+                    </select>
+                    <small
+                        style="color: rgba(255, 255, 255, 0.7); font-size: 0.85rem; margin-top: 5px; display: block;">
+                        New = First time, Incumbent = Re-election, Mixed = Combination
+                    </small>
+                </div>
+
+                <!-- Error Message -->
+                <div id="errorMessage" class="error-message hidden"></div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="btn-text">Predict Outcome</span>
+                    <span class="btn-icon">🔮</span>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Result Section -->
+    <section id="resultSection" class="result-section hidden">
+        <div class="result-card">
+            <div class="result-header">
+                <h3 class="result-title">Prediction Result</h3>
+                <button class="close-btn" onclick="resetForm()">✕</button>
+            </div>
+
+            <div class="result-content">
+                <div class="result-icon" id="resultIcon">🏆</div>
+                <div class="result-prediction" id="resultPrediction">Win</div>
+                <div class="result-details">
+                    <p class="result-party">
+                        <strong>Party:</strong> <span id="resultParty">-</span>
+                    </p>
+                    <p class="result-confidence">
+                        <strong>Win Probability:</strong> <span id="resultConfidence">-</span>%
+                    </p>
+                </div>
+                <div class="confidence-bar">
+                    <div class="confidence-fill" id="confidenceFill"></div>
+                </div>
+
+                <!-- Party Information Box -->
+                <div id="partyInfoBox" class="party-info-box hidden">
+                    <div class="party-info-title">📊 Party Background</div>
+                    <div class="party-stats" id="partyStats"></div>
+                    <a href="#" id="viewPartyLink" class="view-party-btn">View Full Party Profile →</a>
+                </div>
+            </div>
+
+            <button class="new-prediction-btn" onclick="resetForm()">
+                Make Another Prediction
+            </button>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% endblock %}
