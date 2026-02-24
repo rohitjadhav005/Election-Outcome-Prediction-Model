@@ -32,8 +32,11 @@ statistics{% endblock %}
                     <div class="stat-value">{{ party.total_rs_wins }}</div>
                 </div>
                 <div class="party-stat">
-                    <div class="stat-label">Win Rate</div>
-                    <div class="stat-value">{{ "%.1f"|format(party.win_rate) }}%</div>
+                    <div class="stat-label">Weighted Win Rate</div>
+                    <div class="stat-value"
+                        style="color: {% if party.win_rate >= 70 %}#2ecc71{% elif party.win_rate <= 20 %}#e74c3c{% else %}#f39c12{% endif %}">
+                        {{ "%.1f"|format(party.win_rate) }}%
+                    </div>
                 </div>
             </div>
 

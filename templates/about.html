@@ -1,85 +1,102 @@
 {% extends "base.html" %}
 
-{% block title %}About - Election Outcome Prediction{% endblock %}
-{% block meta_description %}Learn about our AI-powered election prediction system and methodology{% endblock %}
+{% block title %}About - Election Outcome Predictor{% endblock %}
+{% block meta_description %}Learn about the AI-powered Maharashtra election prediction system and its methodology{%
+endblock %}
 
 {% block content %}
 <div class="container">
     <!-- Page Header -->
     <header class="header" style="margin-top: 30px;">
-        <h1 class="logo">ℹ️ About Our System</h1>
-        <p class="tagline">AI-Powered Election Forecasting</p>
+        <h1 class="logo">ℹ️ About This System</h1>
+        <p class="tagline">How the election prediction model works</p>
     </header>
 
     <!-- About Content -->
     <section class="form-section">
-        <div class="form-card">
+        <div class="form-card" style="max-width: 750px;">
             <h2 class="form-title">How It Works</h2>
 
             <div style="line-height: 1.8; color: rgba(255, 255, 255, 0.9);">
+
                 <h3 style="color: #3498db; margin-top: 25px; margin-bottom: 15px;">🤖 Machine Learning Model</h3>
                 <p>
-                    Our election prediction system uses a <strong>Logistic Regression</strong> machine learning model
-                    trained on historical election data from Maharashtra. The model analyzes multiple factors to
-                    predict election outcomes with high accuracy.
+                    This system uses a <strong>Random Forest Classifier</strong> (200 decision trees) trained on 72
+                    years of
+                    real Maharashtra Rajya Sabha election data (1952–2024). Each tree votes on the outcome; the final
+                    win probability is the average across all trees.
                 </p>
 
-                <h3 style="color: #3498db; margin-top: 25px; margin-bottom: 15px;">📊 Prediction Features</h3>
+                <h3 style="color: #3498db; margin-top: 25px; margin-bottom: 15px;">⚡ Recency Weighting</h3>
                 <p>
-                    Our system analyzes party strength using:
+                    Not all elections are equal — politics changes over time! The model uses
+                    <strong>exponential decay weighting</strong> so that recent elections matter more:
                 </p>
-                <ul style="margin-left: 20px; margin-top: 10px; color: rgba(255, 255, 255, 0.85);">
-                    <li><strong>MLA Strength:</strong> Current number of MLAs the party holds</li>
-                    <li><strong>Alliance Formations:</strong> Total strength including alliance partners</li>
-                    <li><strong>Historical Performance:</strong> Past Rajya Sabha wins and election results</li>
-                    <li><strong>Candidate Type:</strong> New candidates, incumbents, or mixed scenarios</li>
-                </ul>
-
-                <h3 style="color: #3498db; margin-top: 25px; margin-bottom: 15px;">🎯 Key Features</h3>
-                <div class="party-stats" style="margin-top: 15px;">
+                <div class="party-stats" style="margin-top: 15px; margin-bottom: 10px;">
                     <div class="party-stat">
-                        <div class="stat-label">Model Type</div>
-                        <div class="stat-value" style="font-size: 1.1rem;">Logistic Regression</div>
+                        <div class="stat-label">2024 Election</div>
+                        <div class="stat-value" style="color: #2ecc71;">1.00×</div>
                     </div>
                     <div class="party-stat">
-                        <div class="stat-label">Training Data</div>
-                        <div class="stat-value" style="font-size: 1.1rem;">1952-2024</div>
+                        <div class="stat-label">2022 Election</div>
+                        <div class="stat-value" style="color: #3498db;">0.85×</div>
                     </div>
                     <div class="party-stat">
-                        <div class="stat-label">Total Records</div>
-                        <div class="stat-value" style="font-size: 1.1rem;">153</div>
+                        <div class="stat-label">2020 Election</div>
+                        <div class="stat-value" style="color: #3498db;">0.72×</div>
+                    </div>
+                    <div class="party-stat">
+                        <div class="stat-label">1952 Election</div>
+                        <div class="stat-value" style="color: rgba(255,255,255,0.4);">~0.00×</div>
                     </div>
                 </div>
 
-                <h3 style="color: #3498db; margin-top: 25px; margin-bottom: 15px;">📈 Data Sources</h3>
-                <p>
-                    Our model is trained on comprehensive election data including:
-                </p>
+                <h3 style="color: #3498db; margin-top: 25px; margin-bottom: 15px;">📊 What the Model Looks At (9
+                    Features)</h3>
                 <ul style="margin-left: 20px; margin-top: 10px; color: rgba(255, 255, 255, 0.85);">
-                    <li>Historical election results (1952-2024)</li>
-                    <li>MLA strength and alliance formations</li>
-                    <li>Rajya Sabha election outcomes</li>
-                    <li>Candidate type classifications</li>
-                    <li>Party performance trends over 72 years</li>
+                    <li><strong>Party Identity:</strong> Encoded party name — model learns each party's historical
+                        pattern</li>
+                    <li><strong>MLA Strength:</strong> How many MLAs the party currently holds</li>
+                    <li><strong>Alliance Strength:</strong> Combined MLA count including all coalition partners</li>
+                    <li><strong>Alliance Majority Flag:</strong> Whether the alliance holds ≥145 MLAs — the key RS
+                        election trigger</li>
+                    <li><strong>MLA Share %:</strong> Party's share of all 288 Maharashtra seats (normalised)</li>
+                    <li><strong>Alliance Share %:</strong> Alliance's share of all 288 seats (normalised)</li>
+                    <li><strong>Past Rajya Sabha Wins:</strong> Historical RS track record</li>
+                    <li><strong>Candidate Type:</strong> New, Experienced/Incumbent, or Mixed</li>
+                    <li><strong>Year:</strong> Captures political era trends (with recency weighting)</li>
                 </ul>
 
-                <h3 style="color: #3498db; margin-top: 25px; margin-bottom: 15px;">🔍 Methodology</h3>
-                <p>
-                    The prediction process involves:
-                </p>
-                <ol style="margin-left: 20px; margin-top: 10px; color: rgba(255, 255, 255, 0.85);">
-                    <li><strong>Data Collection:</strong> Gathering relevant election parameters</li>
-                    <li><strong>Feature Engineering:</strong> Processing and normalizing input data</li>
-                    <li><strong>Model Prediction:</strong> Running the trained ML model</li>
-                    <li><strong>Confidence Calculation:</strong> Determining prediction probability</li>
-                    <li><strong>Result Presentation:</strong> Displaying outcomes with party context</li>
-                </ol>
+                <h3 style="color: #3498db; margin-top: 25px; margin-bottom: 15px;">🎯 Model Stats</h3>
+                <div class="party-stats" style="margin-top: 15px;">
+                    <div class="party-stat">
+                        <div class="stat-label">Algorithm</div>
+                        <div class="stat-value" style="font-size: 1rem;">Random Forest</div>
+                    </div>
+                    <div class="party-stat">
+                        <div class="stat-label">Decision Trees</div>
+                        <div class="stat-value" style="font-size: 1.1rem;">200</div>
+                    </div>
+                    <div class="party-stat">
+                        <div class="stat-label">Total Records</div>
+                        <div class="stat-value" id="aboutRecordCount" style="font-size: 1.1rem;">—</div>
+                    </div>
+                    <div class="party-stat">
+                        <div class="stat-label">Features Used</div>
+                        <div class="stat-value" style="font-size: 1.1rem;">9</div>
+                    </div>
+                    <div class="party-stat">
+                        <div class="stat-label">Predicts</div>
+                        <div class="stat-value" style="font-size: 1rem;">2027 RS</div>
+                    </div>
+                </div>
 
                 <h3 style="color: #3498db; margin-top: 25px; margin-bottom: 15px;">⚠️ Disclaimer</h3>
-                <p style="background: rgba(255, 193, 7, 0.15); padding: 15px; border-radius: 10px; border-left: 4px solid #ffc107; color: rgba(255, 255, 255, 0.95);">
-                    This system provides predictions based on historical data and statistical models.
-                    Actual election outcomes may vary due to numerous dynamic factors including current events,
-                    campaign strategies, and voter sentiment. Use these predictions as informational guidance only.
+                <p
+                    style="background: rgba(255, 193, 7, 0.15); padding: 15px; border-radius: 10px; border-left: 4px solid #ffc107; color: rgba(255, 255, 255, 0.95);">
+                    Predictions are based on historical patterns only. Real elections can be affected by
+                    many factors not captured here — current events, campaign strategies, voter sentiment, etc.
+                    Use this as an informational tool, not a definitive forecast.
                 </p>
 
                 <div style="margin-top: 30px; text-align: center;">
@@ -92,4 +109,16 @@
         </div>
     </section>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Pull live record count from API to keep About page accurate
+    fetch('/api/stats').then(r => r.json()).then(d => {
+        if (d.success) {
+            const el = document.getElementById('aboutRecordCount');
+            if (el) el.textContent = d.total_records;
+        }
+    }).catch(() => { });
+</script>
 {% endblock %}

@@ -1,18 +1,18 @@
-<<<<<<< HEAD
-=======
-# Python
->>>>>>> dbbd8fb1212f5ebfe739370b3ca434f672d52dbc
+# Python virtual environments
+venv/
+ENV/
+env/
+.env
+.venv
+
+# Compiled Python files
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-env/
-<<<<<<< HEAD
-=======
-venv/
-ENV/
->>>>>>> dbbd8fb1212f5ebfe739370b3ca434f672d52dbc
+
+# Distribution / packaging
 build/
 develop-eggs/
 dist/
@@ -25,43 +25,17 @@ parts/
 sdist/
 var/
 wheels/
-<<<<<<< HEAD
 share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 MANIFEST
-=======
-*.egg-info/
-.installed.cfg
-*.egg
 
 # Flask
 instance/
 .webassets-cache
->>>>>>> dbbd8fb1212f5ebfe739370b3ca434f672d52dbc
 
-# Jupyter Notebook
-.ipynb_checkpoints
-
-<<<<<<< HEAD
-# VS Code
-.vscode/
-
-# Virtual environments
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# OSX
-.DS_Store
-=======
-# Environment variables
-.env
-.venv
-
-# IDE
+# IDEs
 .vscode/
 .idea/
 *.swp
@@ -72,10 +46,7 @@ venv.bak/
 .DS_Store
 Thumbs.db
 
-# Output files
-output.txt
+# Logs and temporary files
 *.log
-
-# Temporary files
+output.txt
 *.tmp
->>>>>>> dbbd8fb1212f5ebfe739370b3ca434f672d52dbc

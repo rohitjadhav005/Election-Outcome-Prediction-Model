@@ -1,27 +1,58 @@
 /**
- * Election Outcome Prediction - Frontend JavaScript
- * Simplified to use only dataset features
+ * Election Outcome Prediction — Frontend JavaScript
+ * Aligned with backend API: /predict, /api/stats, /api/party/<name>
  */
 
-// Get DOM elements
+// ── DOM Elements ──────────────────────────────────────────────
 const form = document.getElementById('predictionForm');
 const submitBtn = document.getElementById('submitBtn');
 const errorMessage = document.getElementById('errorMessage');
 const resultSection = document.getElementById('resultSection');
-const formSection = document.querySelector('.form-section');
+const formSection = document.getElementById('formSection');
 
-/**
- * Form submission handler
- */
+// ── Load live stats into banner ───────────────────────────────
+async function loadStats() {
+    try {
+        const res = await fetch('/api/stats');
+        const data = await res.json();
+        if (!data.success) return;
+
+        document.getElementById('totalRecords').textContent = data.total_records ?? '—';
+        document.getElementById('totalParties').textContent = (data.unique_parties ?? []).length || '—';
+
+        // Find the party with the most wins
+        const wins = data.party_wins ?? {};
+        const topParty = Object.entries(wins).sort((a, b) => b[1] - a[1])[0];
+        if (topParty) {
+            document.getElementById('topParty').textContent = `${topParty[0]} (${topParty[1]})`;
+        }
+    } catch (e) {
+        console.warn('Could not load stats:', e);
+    }
+}
+
+// ── Auto-select party from URL (e.g. /?party=BJP) ─────────────
+function autoSelectParty() {
+    const params = new URLSearchParams(window.location.search);
+    const party = params.get('party');
+    if (party) {
+        const select = document.getElementById('partyName');
+        for (const opt of select.options) {
+            if (opt.value === party) {
+                select.value = party;
+                break;
+            }
+        }
+    }
+}
+
+// ── Form submission ───────────────────────────────────────────
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    // Clear previous error messages
     hideError();
 
-    // Get form data
     const formData = new FormData(form);
-    const data = {
+    const payload = {
         party_name: formData.get('party_name'),
         mla_strength: formData.get('mla_strength'),
         alliance_mla_strength: formData.get('alliance_mla_strength'),
@@ -29,221 +60,157 @@ form.addEventListener('submit', async (e) => {
         candidate_type: formData.get('candidate_type')
     };
 
-    // Client-side validation
-    if (!validateForm(data)) {
-        return;
-    }
+    if (!validateForm(payload)) return;
 
-    // Show loading state
     setLoadingState(true);
 
     try {
-        // Send POST request to backend
         const response = await fetch('/predict', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         });
 
         const result = await response.json();
-
-        // Hide loading state
         setLoadingState(false);
 
-        // Check if request was successful
         if (result.success) {
             displayResult(result);
         } else {
-            showError(result.error || 'An error occurred while processing your request');
+            showError(result.error || 'An error occurred. Please try again.');
         }
 
-    } catch (error) {
+    } catch (err) {
         setLoadingState(false);
-        showError('Unable to connect to the server. Please try again later.');
-        console.error('Error:', error);
+        showError('Unable to connect to the server. Please try again.');
+        console.error('Fetch error:', err);
     }
 });
 
-/**
- * Validates form data
- */
+// ── Validation ────────────────────────────────────────────────
 function validateForm(data) {
-    // Check for empty fields
-    const requiredFields = ['party_name', 'mla_strength', 'alliance_mla_strength', 'past_rs_wins', 'candidate_type'];
-
-    for (const field of requiredFields) {
+    const required = ['party_name', 'mla_strength', 'alliance_mla_strength', 'past_rs_wins', 'candidate_type'];
+    for (const field of required) {
         if (!data[field] || data[field].toString().trim() === '') {
-            showError('Please fill in all required fields');
+            showError('Please fill in all required fields.');
             return false;
         }
     }
 
-    // Validate numeric fields
-    const mlaStrength = parseFloat(data.mla_strength);
-    if (isNaN(mlaStrength) || mlaStrength < 0) {
-        showError('MLA strength must be a positive number');
-        return false;
+    if (isNaN(parseFloat(data.mla_strength)) || parseFloat(data.mla_strength) < 0) {
+        showError('MLA Strength must be a positive number.'); return false;
     }
-
-    const allianceMlaStrength = parseFloat(data.alliance_mla_strength);
-    if (isNaN(allianceMlaStrength) || allianceMlaStrength < 0) {
-        showError('Alliance MLA strength must be a positive number');
-        return false;
+    if (isNaN(parseFloat(data.alliance_mla_strength)) || parseFloat(data.alliance_mla_strength) < 0) {
+        showError('Alliance MLA Strength must be a positive number.'); return false;
     }
-
-    const pastRsWins = parseFloat(data.past_rs_wins);
-    if (isNaN(pastRsWins) || pastRsWins < 0) {
-        showError('Past RS wins must be a positive number');
-        return false;
+    if (isNaN(parseFloat(data.past_rs_wins)) || parseFloat(data.past_rs_wins) < 0) {
+        showError('Past Rajya Sabha Wins must be a positive number.'); return false;
     }
 
     return true;
 }
 
-/**
- * Displays the prediction result
- */
+// ── Display result ────────────────────────────────────────────
 function displayResult(result) {
-    // Get result elements
     const resultCard = document.querySelector('.result-card');
     const resultIcon = document.getElementById('resultIcon');
     const resultPrediction = document.getElementById('resultPrediction');
     const resultParty = document.getElementById('resultParty');
     const resultConfidence = document.getElementById('resultConfidence');
     const confidenceFill = document.getElementById('confidenceFill');
-    const partyInfoBox = document.getElementById('partyInfoBox');
 
-    // Set result values
-    resultParty.textContent = result.party_name || result.party || '-';
-    resultConfidence.textContent = result.win_probability || result.confidence || 0;
+    const partyName = result.party_name || result.party || '-';
+    const winProb = result.win_probability ?? 0;
+    const isWin = result.prediction === 1;
 
-    // Set prediction text
-    if (result.prediction === 1 || result.prediction === 'Win') {
-        resultPrediction.textContent = 'Win';
+    resultParty.textContent = partyName;
+    resultConfidence.textContent = winProb;
+
+    if (isWin) {
+        resultPrediction.textContent = '🏆 Likely to WIN';
         resultIcon.textContent = '🏆';
-        resultCard.classList.remove('lose');
-        resultCard.classList.add('win');
+        resultCard.classList.replace('lose', 'win') || resultCard.classList.add('win');
     } else {
-        resultPrediction.textContent = 'Lose';
+        resultPrediction.textContent = '📉 Likely to LOSE';
         resultIcon.textContent = '📊';
-        resultCard.classList.remove('win');
-        resultCard.classList.add('lose');
+        resultCard.classList.replace('win', 'lose') || resultCard.classList.add('lose');
     }
 
-    // Animate confidence bar
-    const confidenceValue = result.win_probability || result.confidence || 0;
+    // Animate probability bar
     setTimeout(() => {
-        confidenceFill.style.width = confidenceValue + '%';
+        confidenceFill.style.width = winProb + '%';
     }, 100);
 
-    // Display party information if available
+    // Show party background stats if returned by backend
     if (result.party_info) {
         displayPartyInfo(result.party_info);
-    } else if (result.party_name) {
-        fetchPartyInfo(result.party_name);
+    } else {
+        fetchAndDisplayPartyInfo(partyName);
     }
 
-    // Hide form and show result
+    // Swap form → result
     formSection.classList.add('hidden');
     resultSection.classList.remove('hidden');
-
-    // Scroll to result
     resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-/**
- * Display party information
- */
-function displayPartyInfo(partyInfo) {
-    const partyInfoBox = document.getElementById('partyInfoBox');
+// ── Party info box ────────────────────────────────────────────
+function displayPartyInfo(info) {
+    const box = document.getElementById('partyInfoBox');
     const partyStats = document.getElementById('partyStats');
     const viewPartyLink = document.getElementById('viewPartyLink');
 
-    // Build stats HTML
-    let statsHTML = '';
-    if (partyInfo.current_mla_strength !== undefined) {
-        statsHTML += `
-            <div class="party-stat">
-                <div class="stat-label">MLA Strength</div>
-                <div class="stat-value">${partyInfo.current_mla_strength}</div>
-            </div>
-        `;
-    }
-    if (partyInfo.total_rs_wins !== undefined) {
-        statsHTML += `
-            <div class="party-stat">
-                <div class="stat-label">RS Wins</div>
-                <div class="stat-value">${partyInfo.total_rs_wins}</div>
-            </div>
-        `;
-    }
-    if (partyInfo.win_rate !== undefined) {
-        statsHTML += `
-            <div class="party-stat">
-                <div class="stat-label">Win Rate</div>
-                <div class="stat-value">${partyInfo.win_rate}%</div>
-            </div>
-        `;
-    }
+    partyStats.innerHTML = `
+        <div class="party-stat">
+            <div class="stat-label">MLA Strength</div>
+            <div class="stat-value">${info.current_mla_strength ?? '—'}</div>
+        </div>
+        <div class="party-stat">
+            <div class="stat-label">Alliance Strength</div>
+            <div class="stat-value">${info.current_alliance_strength ?? '—'}</div>
+        </div>
+        <div class="party-stat">
+            <div class="stat-label">RS Wins</div>
+            <div class="stat-value">${info.total_rs_wins ?? '—'}</div>
+        </div>
+        <div class="party-stat">
+            <div class="stat-label">Win Rate</div>
+            <div class="stat-value">${info.win_rate ?? '—'}%</div>
+        </div>
+    `;
 
-    partyStats.innerHTML = statsHTML;
-    viewPartyLink.href = `/party/${partyInfo.party_name || partyInfo.name}`;
-    partyInfoBox.classList.remove('hidden');
+    viewPartyLink.href = `/party/${encodeURIComponent(info.party_name || info.name || '')}`;
+    box.classList.remove('hidden');
 }
 
-/**
- * Fetch party information from API
- */
-async function fetchPartyInfo(partyName) {
+async function fetchAndDisplayPartyInfo(partyName) {
     try {
-        const response = await fetch(`/api/party/${encodeURIComponent(partyName)}`);
-        const data = await response.json();
-
-        if (data.success) {
-            displayPartyInfo(data.party);
-        }
-    } catch (error) {
-        console.error('Error fetching party info:', error);
+        const res = await fetch(`/api/party/${encodeURIComponent(partyName)}`);
+        const data = await res.json();
+        if (data.success) displayPartyInfo(data.party);
+    } catch (e) {
+        console.warn('Could not fetch party info:', e);
     }
 }
 
-/**
- * Shows error message
- */
-function showError(message) {
-    errorMessage.textContent = message;
+// ── UI helpers ────────────────────────────────────────────────
+function showError(msg) {
+    errorMessage.textContent = msg;
     errorMessage.classList.remove('hidden');
     errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-/**
- * Hides error message
- */
 function hideError() {
     errorMessage.classList.add('hidden');
     errorMessage.textContent = '';
 }
 
-/**
- * Sets loading state for submit button
- */
-function setLoadingState(isLoading) {
-    if (isLoading) {
-        submitBtn.disabled = true;
-        submitBtn.classList.add('loading');
-        submitBtn.querySelector('.btn-text').textContent = 'Processing';
-    } else {
-        submitBtn.disabled = false;
-        submitBtn.classList.remove('loading');
-        submitBtn.querySelector('.btn-text').textContent = 'Predict Outcome';
-    }
+function setLoadingState(loading) {
+    submitBtn.disabled = loading;
+    submitBtn.classList.toggle('loading', loading);
+    submitBtn.querySelector('.btn-text').textContent = loading ? 'Processing' : 'Predict Outcome';
 }
 
-/**
- * Resets the form
- */
 function resetForm() {
     form.reset();
     resultSection.classList.add('hidden');
@@ -251,43 +218,29 @@ function resetForm() {
     hideError();
     document.getElementById('confidenceFill').style.width = '0%';
     document.getElementById('partyInfoBox').classList.add('hidden');
+    document.querySelector('.result-card')?.classList.remove('win', 'lose');
     formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-/**
- * Add input enhancements
- */
+// ── Input enhancements ────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-    const inputs = document.querySelectorAll('.form-input, .form-select');
+    loadStats();
+    autoSelectParty();
 
-    inputs.forEach(input => {
-        input.addEventListener('focus', function () {
-            this.parentElement.classList.add('focused');
-        });
-
-        input.addEventListener('blur', function () {
-            this.parentElement.classList.remove('focused');
-        });
+    document.querySelectorAll('.form-input, .form-select').forEach(el => {
+        el.addEventListener('focus', () => el.parentElement.classList.add('focused'));
+        el.addEventListener('blur', () => el.parentElement.classList.remove('focused'));
     });
 
-    // Number input validation
-    const numberInputs = document.querySelectorAll('input[type="number"]');
-    numberInputs.forEach(input => {
+    // Prevent non-numeric characters in number fields
+    document.querySelectorAll('input[type="number"]').forEach(input => {
         input.addEventListener('input', function () {
-            this.value = this.value.replace(/[^0-9.]/g, '');
-            const parts = this.value.split('.');
-            if (parts.length > 2) {
-                this.value = parts[0] + '.' + parts.slice(1).join('');
-            }
+            this.value = this.value.replace(/[^0-9]/g, '');
         });
     });
 });
 
-/**
- * Prevent form submission on Enter in inputs
- */
+// Prevent accidental Enter submission
 form.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') {
-        e.preventDefault();
-    }
+    if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') e.preventDefault();
 });

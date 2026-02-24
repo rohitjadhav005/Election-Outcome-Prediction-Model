@@ -73,7 +73,9 @@ year,party,mla_strength,alliance_mla_strength,past_rs_wins,candidate_type,winner
 2022,SS,55,170,7,2,0
 2022,NCP,53,170,7,2,0
 2022,INC,44,170,10,0,0
-2024,BJP,132,230,15,2,1
-2024,SS,81,230,1,0,0
-2024,NCP,59,230,1,0,0
-2024,INC,16,48,10,0,0
+2024,BJP,132,235,15,2,1
+2024,SS(Shinde),57,235,1,2,1
+2024,NCP(Ajit),41,235,1,2,1
+2024,INC,16,50,10,0,0
+2024,SS(UBT),20,50,0,0,0
+2024,NCP(Sharad),10,50,0,0,0

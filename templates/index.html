@@ -1,24 +1,27 @@
 {% extends "base.html" %}
 
-{% block title %}Home - Election Outcome Prediction{% endblock %}
-{% block meta_description %}Predict election outcomes using AI-powered analysis of party data{% endblock %}
+{% block title %}Home - Election Outcome Predictor{% endblock %}
+{% block meta_description %}Predict Maharashtra Rajya Sabha election outcomes using AI-powered analysis of MLA strength
+and historical data{% endblock %}
 
 {% block content %}
 <div class="container">
+
     <!-- Page Header -->
     <header class="header" style="margin-top: 30px;">
         <h1 class="logo">🗳️ Election Outcome Predictor</h1>
-        <p class="tagline">AI-Powered Election Forecasting System</p>
+        <p class="tagline">Maharashtra Rajya Sabha — AI-Powered Forecasting (1952–2024 Data)</p>
     </header>
 
     <!-- Prediction Form Card -->
-    <section class="form-section">
+    <section class="form-section" id="formSection">
         <div class="form-card">
-            <h2 class="form-title">Predict Election Outcome</h2>
-            <p class="form-description">Enter party and candidate information to predict the election outcome</p>
+            <h2 class="form-title">🔮 Predict Election Outcome</h2>
+            <p class="form-description">Enter current party data to predict the 2027 Rajya Sabha outcome</p>
 
             <!-- Prediction Form -->
             <form id="predictionForm" class="prediction-form">
+
                 <!-- Party Name -->
                 <div class="form-group">
                     <label for="partyName" class="form-label">
@@ -27,11 +30,20 @@
                     </label>
                     <select id="partyName" name="party_name" class="form-select" required>
                         <option value="">Select a party</option>
-                        <option value="BJP">Bharatiya Janata Party (BJP)</option>
-                        <option value="INC">Indian National Congress (INC)</option>
-                        <option value="NCP">Nationalist Congress Party (NCP)</option>
-                        <option value="Shiv Sena">Shiv Sena</option>
-                        <option value="Independent">Independent</option>
+                        <optgroup label="🟠 Mahayuti Alliance (2024 — 235 MLAs)">
+                            <option value="BJP">🟠 BJP — Bharatiya Janata Party (132 MLAs)</option>
+                            <option value="SS(Shinde)">🟡 Shiv Sena – Shinde (57 MLAs)</option>
+                            <option value="NCP(Ajit)">🟢 NCP – Ajit Pawar (41 MLAs)</option>
+                        </optgroup>
+                        <optgroup label="🔵 MVA Alliance (2024 — 50 MLAs)">
+                            <option value="INC">🔵 INC — Indian National Congress (16 MLAs)</option>
+                            <option value="SS(UBT)">🔥 Shiv Sena – UBT / Uddhav (20 MLAs)</option>
+                            <option value="NCP(Sharad)">🫐 NCP – Sharad Pawar (10 MLAs)</option>
+                        </optgroup>
+                        <optgroup label="📜 Legacy / Historical">
+                            <option value="SS">Shiv Sena (pre-2022 split)</option>
+                            <option value="NCP">NCP (pre-2023 split)</option>
+                        </optgroup>
                     </select>
                 </div>
 
@@ -41,12 +53,10 @@
                         <span class="label-text">MLA Strength</span>
                         <span class="required">*</span>
                     </label>
-                    <input type="number" id="mlaStrength" name="mla_strength" class="form-input"
-                        placeholder="Number of MLAs (e.g., 132)" min="0" required>
-                    <small
-                        style="color: rgba(255, 255, 255, 0.7); font-size: 0.85rem; margin-top: 5px; display: block;">
-                        Total number of MLAs the party has
-                    </small>
+                    <input type="number" id="mlaStrength" name="mla_strength" class="form-input" placeholder="e.g. 132"
+                        min="0" max="288" required>
+                    <small class="field-hint">Total number of MLAs the party holds in Maharashtra Assembly (max
+                        288)</small>
                 </div>
 
                 <!-- Alliance MLA Strength -->
@@ -56,11 +66,9 @@
                         <span class="required">*</span>
                     </label>
                     <input type="number" id="allianceMlaStrength" name="alliance_mla_strength" class="form-input"
-                        placeholder="Total MLAs in alliance (e.g., 132)" min="0" required>
-                    <small
-                        style="color: rgba(255, 255, 255, 0.7); font-size: 0.85rem; margin-top: 5px; display: block;">
-                        Total MLAs including alliance partners (same as MLA strength if no alliance)
-                    </small>
+                        placeholder="e.g. 230" min="0" max="288" required>
+                    <small class="field-hint">Total MLAs including all alliance partners — same as MLA Strength if no
+                        alliance</small>
                 </div>
 
                 <!-- Past RS Wins -->
@@ -69,12 +77,9 @@
                         <span class="label-text">Past Rajya Sabha Wins</span>
                         <span class="required">*</span>
                     </label>
-                    <input type="number" id="pastRsWins" name="past_rs_wins" class="form-input"
-                        placeholder="Historical RS wins (e.g., 3)" min="0" required>
-                    <small
-                        style="color: rgba(255, 255, 255, 0.7); font-size: 0.85rem; margin-top: 5px; display: block;">
-                        Number of Rajya Sabha seats won previously
-                    </small>
+                    <input type="number" id="pastRsWins" name="past_rs_wins" class="form-input" placeholder="e.g. 15"
+                        min="0" required>
+                    <small class="field-hint">Number of Rajya Sabha seats the party has won historically</small>
                 </div>
 
                 <!-- Candidate Type -->
@@ -85,14 +90,10 @@
                     </label>
                     <select id="candidateType" name="candidate_type" class="form-select" required>
                         <option value="">Select candidate type</option>
-                        <option value="new">New Candidate</option>
-                        <option value="incumbent">Incumbent</option>
-                        <option value="mixed">Mixed</option>
+                        <option value="new">🆕 New / First-time candidate</option>
+                        <option value="experienced">🔄 Experienced / Incumbent (seeking re-election)</option>
+                        <option value="mixed">🔀 Mixed (combination of new and experienced)</option>
                     </select>
-                    <small
-                        style="color: rgba(255, 255, 255, 0.7); font-size: 0.85rem; margin-top: 5px; display: block;">
-                        New = First time, Incumbent = Re-election, Mixed = Combination
-                    </small>
                 </div>
 
                 <!-- Error Message -->
@@ -118,6 +119,7 @@
             <div class="result-content">
                 <div class="result-icon" id="resultIcon">🏆</div>
                 <div class="result-prediction" id="resultPrediction">Win</div>
+
                 <div class="result-details">
                     <p class="result-party">
                         <strong>Party:</strong> <span id="resultParty">-</span>
@@ -125,7 +127,12 @@
                     <p class="result-confidence">
                         <strong>Win Probability:</strong> <span id="resultConfidence">-</span>%
                     </p>
+                    <p style="font-size:0.9rem; color: rgba(255,255,255,0.65); margin-top:8px;">
+                        Predicted for the 2027 Maharashtra Rajya Sabha election
+                    </p>
                 </div>
+
+                <!-- Confidence Bar -->
                 <div class="confidence-bar">
                     <div class="confidence-fill" id="confidenceFill"></div>
                 </div>
@@ -143,6 +150,7 @@
             </button>
         </div>
     </section>
+
 </div>
 {% endblock %}
 

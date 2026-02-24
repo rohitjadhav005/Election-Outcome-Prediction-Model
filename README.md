@@ -1,30 +1,31 @@
 # 🗳️ Maharashtra Election Outcome Predictor
 
-A simple machine learning project that predicts which political party is likely to win the Maharashtra Rajya Sabha election — built with Python, Flask, and a clean web interface.
+A machine learning project that predicts the probability of a political party winning a Maharashtra election. Built with Python, Flask, scikit-learn, and a clean web interface.
 
 ---
 
 ## 💡 What does this project do?
 
-It looks at past Maharashtra election data (2014–2024) and uses that to predict which party has the best chance of winning in 2027. You can either run it from the command line or use the web interface to enter details and get an instant prediction.
+It analyzes historical Maharashtra election data (1952–2024) to predict election outcomes (e.g., for 2027). You can use the interactive web interface to view party statistics or enter specific scenario details to get an instant prediction.
+
+The model incorporates real-world political dynamics, including recency weighting (recent elections matter more) and tracking post-split party factions like the NCP (Ajit/Sharad) and Shiv Sena (Shinde/UBT).
 
 ---
 
 ## 📁 Project Structure
 
-```
+```text
 Election-Outcome-Prediction-Model/
-├── app.py                  # The main Flask web app
-├── requirements.txt        # All Python packages needed
+├── app.py                  # The main Flask web app & prediction API
+├── requirements.txt        # Python package dependencies
 ├── data/
-│   └── clean_election.csv  # Cleaned historical election data
-├── src/
-│   └── main.py             # Standalone prediction script
-├── notebook/
-│   └── election_analysis.ipynb  # Full analysis with charts
-├── templates/
-│   └── index.html          # Web page UI
-└── static/                 # CSS and JavaScript files
+│   └── clean_election.csv  # Cleaned 1952-2024 historical election data
+├── templates/              # HTML files for the web interface
+│   ├── index.html          # Main prediction page
+│   ├── parties.html        # Parties list
+│   ├── party_detail.html   # Detailed party info
+│   └── about.html          # About page
+└── static/                 # (Optional) CSS and JS files
 ```
 
 ---
@@ -36,72 +37,55 @@ Election-Outcome-Prediction-Model/
 pip install -r requirements.txt
 ```
 
-### 2. Run the web app
+### 2. Run the Web App
 ```bash
 python app.py
 ```
-Then open your browser and go to 👉 `http://localhost:5000`
-
-Fill in the form and hit **Predict** — that's it!
-
-### 3. Or run from the command line
-```bash
-python src/main.py
-```
-This will print win probabilities for each party directly in your terminal.
+Wait for the model to train automatically, then open your browser and go to 👉 `http://localhost:5000`
 
 ---
 
-## 🧠 How does it work?
+## 🧠 How does the Model Work?
 
-The model is trained on real election data. It looks at factors like:
+The prediction engine is a **Random Forest Classifier** that evaluates multiple features:
 
-- **MLA Strength** — how many MLAs the party has
-- **Alliance Strength** — combined strength with partners
-- **Past Rajya Sabha Wins** — the party's track record
-- **Candidate Type** — what kind of candidate is being fielded
-
-Based on these, it calculates a **win probability** for each party and tells you who is most likely to win.
-
----
-
-## 📊 Sample Output
-
-```
-🏆 BJP is predicted to WIN the 2027 Rajya Sabha seat!
-   Win Probability: 85.23%
-
-🥈 Runner-up: NCP (45.67%)
-```
+- **Party Identity** — learned patterns specific to each party.
+- **MLA Strength** & **Alliance Strength** — current numbers and normalized percentages.
+- **Alliance Majority Flag** — checks if the alliance crosses the magic number (145+ out of 288 seats).
+- **Candidate Type** — whether the candidate is an incumbent, new, or mixed.
+- **Past Wins** — historical track record.
+- **⚡ Recency Weighting** — uses an exponential decay of `0.85/yearly` so recent elections (2024, 2022) heavily influence predictions compared to older data (e.g., 1952).
 
 ---
 
-## ⚠️ Things to keep in mind
+## 🌐 API Endpoints
 
-- Predictions are based only on **historical data** — real elections can be unpredictable!
-- The dataset only covers **Maharashtra Rajya Sabha elections** (2014–2024)
-- Political changes, alliances, or events not in the data won't be reflected
+The app exposes several JSON APIs you can interact with programmatically:
+- `GET /api/parties` — List of all parties and their current strength.
+- `GET /api/party/<party_name>` — Detailed historical performance of a specific party.
+- `GET /api/stats` — Overall model statistics and party wins.
+- `POST /predict` — Submit predictor features (`party_name`, `mla_strength`, `alliance_mla_strength`, `past_rs_wins`, `candidate_type`) to get a win probability.
+
+---
+
+## ⚠️ Important Notes
+
+- Predictions use purely **historical data** (1952–2024), applying logic based on past trends.
+- The model treats alliances and split factions (e.g., Mahayuti vs MVA components) as they currently stand.
+- Real-world elections can be influenced by unexpected political events that data cannot foresee.
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Tool | What it's used for |
+| Tool | Usage |
 |------|-------------------|
-| Python | Core language |
-| Flask | Web framework |
-| scikit-learn | Machine learning model |
-| pandas | Data handling |
-| HTML/CSS/JS | Frontend interface |
+| Python 3 | Core logic |
+| Flask | Web server & REST API |
+| scikit-learn | Random Forest ML Model |
+| pandas & numpy | Data manipulation |
+| HTML / JS | Frontend interface |
 
 ---
 
-## 🙋 Who is this for?
-
-This project is great for students or anyone learning how machine learning can be applied to real-world data like elections. It's educational and open to improvements!
-
-Feel free to fork it, experiment with it, or add your own features. 😊
-
----
-
-*Predictions are for educational purposes only and may not reflect actual election outcomes.*
+*Disclaimer: Predictions are for educational purposes only and are not guaranteed to reflect actual election outcomes.*

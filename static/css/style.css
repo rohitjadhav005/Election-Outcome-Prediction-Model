@@ -61,7 +61,7 @@ body::after {
    =================================== */
 
 .navbar {
-    background: rgba(44, 62, 80, 0.95);
+    background: rgba(44, 62, 80, 0.4);
     backdrop-filter: blur(10px);
     padding: 0;
     position: sticky;
@@ -776,4 +776,53 @@ body::after {
     font-size: 1.2rem;
     text-align: center;
     padding: 40px;
+}
+
+/* ===================================
+   STATS BANNER (Home Page)
+   =================================== */
+
+.stats-banner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin: 0 auto 30px;
+    max-width: 900px;
+}
+
+.stat-pill {
+    background: rgba(52, 152, 219, 0.15);
+    border: 1px solid rgba(52, 152, 219, 0.35);
+    border-radius: 50px;
+    padding: 8px 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: white;
+    backdrop-filter: blur(6px);
+}
+
+.pill-label {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.82rem;
+}
+
+.pill-value {
+    font-weight: 700;
+    color: #3498db;
+    white-space: nowrap;
+}
+
+/* ===================================
+   FIELD HINTS
+   =================================== */
+
+.field-hint {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.82rem;
+    margin-top: 4px;
+    display: block;
+    line-height: 1.4;
 }

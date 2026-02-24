@@ -70,8 +70,10 @@ function createPartyCard(party) {
                 <span class="party-detail-value">${party.total_rs_wins}</span>
             </div>
             <div class="party-detail-item">
-                <span class="party-detail-label">Win Rate:</span>
-                <span class="party-detail-value">${party.win_rate.toFixed(1)}%</span>
+                <span class="party-detail-label">Weighted Win Rate:</span>
+                <span class="party-detail-value" style="color: ${party.win_rate >= 70 ? '#2ecc71' : party.win_rate <= 20 ? '#e74c3c' : '#f39c12'}">
+                    ${party.win_rate.toFixed(1)}%
+                </span>
             </div>
         </div>
         <div class="party-card-footer">
