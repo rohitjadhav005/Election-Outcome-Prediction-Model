@@ -7,8 +7,8 @@
     <meta name="description"
         content="{% block meta_description %}Predict election outcomes using machine learning{% endblock %}">
     <title>{% block title %}Election Outcome Prediction{% endblock %}</title>
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo.png') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', path='images/logo.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -17,7 +17,7 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="/" class="nav-logo">
-                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Election Predictor Logo"
+                <img src="{{ url_for('static', path='images/logo.png') }}" alt="Election Predictor Logo"
                     class="nav-logo-img">
                 <span>Election Predictor</span>
             </a>
@@ -62,7 +62,7 @@
     </footer>
 
     <!-- Navigation JavaScript -->
-    <script src="{{ url_for('static', filename='js/navigation.js') }}"></script>
+    <script src="{{ url_for('static', path='js/navigation.js') }}"></script>
 
     <!-- Page-specific JavaScript -->
     {% block extra_js %}{% endblock %}

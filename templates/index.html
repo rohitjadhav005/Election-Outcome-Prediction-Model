@@ -25,7 +25,7 @@ and historical data{% endblock %}
                 <!-- Party Name -->
                 <div class="form-group">
                     <label for="partyName" class="form-label">
-                        <span class="label-text">Party Name</span>
+                        <span class="label-text">Party Name</span> 
                         <span class="required">*</span>
                     </label>
                     <select id="partyName" name="party_name" class="form-select" required>
@@ -155,5 +155,5 @@ and historical data{% endblock %}
 {% endblock %}
 
 {% block extra_js %}
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+<script src="{{ url_for('static', path='js/script.js') }}"></script>
 {% endblock %}

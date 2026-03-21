@@ -1,4 +1,8 @@
-from flask import Flask, render_template, jsonify, request
+from fastapi import FastAPI, Request, HTTPException
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+import uvicorn
 import pandas as pd
 import numpy as np
 import os
@@ -6,7 +10,13 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 
-app = Flask(__name__)
+app = FastAPI()
+
+# Mount static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Templates setup
+templates = Jinja2Templates(directory="templates")
 
 # Global variables for model and data
 model      = None
@@ -154,35 +164,35 @@ def get_party_info(party_name):
 
 # ==================== ROUTES ====================
 
-@app.route('/')
-def index():
+@app.get('/', response_class=HTMLResponse)
+async def index(request: Request):
     """Render the main prediction page"""
-    return render_template('index.html')
+    return templates.TemplateResponse("index.html", {"request": request})
 
-@app.route('/parties')
-def parties():
+@app.get('/parties', response_class=HTMLResponse)
+async def parties(request: Request):
     """Render the parties listing page"""
-    return render_template('parties.html')
+    return templates.TemplateResponse("parties.html", {"request": request})
 
-@app.route('/party/<party_name>')
-def party_detail(party_name):
+@app.get('/party/{party_name}', response_class=HTMLResponse)
+async def party_detail(request: Request, party_name: str):
     """Render individual party detail page"""
     party_info = get_party_info(party_name)
     
     if party_info is None:
-        return f"Party '{party_name}' not found", 404
+        return HTMLResponse(content=f"Party '{party_name}' not found", status_code=404)
     
-    return render_template('party_detail.html', party=party_info)
+    return templates.TemplateResponse("party_detail.html", {"request": request, "party": party_info})
 
-@app.route('/about')
-def about():
+@app.get('/about', response_class=HTMLResponse)
+async def about(request: Request):
     """Render the about page"""
-    return render_template('about.html')
+    return templates.TemplateResponse("about.html", {"request": request})
 
 # ==================== API ENDPOINTS ====================
 
-@app.route('/api/parties')
-def api_parties():
+@app.get('/api/parties')
+async def api_parties():
     """API endpoint to get all parties"""
     if data is None:
         load_and_train_model()
@@ -199,29 +209,29 @@ def api_parties():
     # Sort by current MLA strength
     parties_info.sort(key=lambda x: x['current_mla_strength'], reverse=True)
     
-    return jsonify({
+    return {
         'success': True,
         'parties': parties_info
-    })
+    }
 
-@app.route('/api/party/<party_name>')
-def api_party_detail(party_name):
+@app.get('/api/party/{party_name}')
+async def api_party_detail(party_name: str):
     """API endpoint to get detailed party information"""
     party_info = get_party_info(party_name)
     
     if party_info is None:
-        return jsonify({
+        return JSONResponse(status_code=404, content={
             'success': False,
             'error': f'Party "{party_name}" not found'
-        }), 404
+        })
     
-    return jsonify({
+    return {
         'success': True,
         'party': party_info
-    })
+    }
 
-@app.route('/predict', methods=['POST'])
-def predict():
+@app.post('/predict')
+async def predict(request: Request):
     """
     Simplified prediction using ONLY dataset features:
     - party_name
@@ -236,17 +246,20 @@ def predict():
             load_and_train_model()
         
         # Get JSON data from request
-        request_data = request.get_json()
+        try:
+            request_data = await request.json()
+        except Exception:
+            request_data = {}
         
         # Validate required fields (only dataset features)
         required_fields = ['party_name', 'mla_strength', 'alliance_mla_strength', 'past_rs_wins', 'candidate_type']
         
         missing_fields = [field for field in required_fields if field not in request_data or request_data[field] == '']
         if missing_fields:
-            return jsonify({
+            return JSONResponse(status_code=400, content={
                 'success': False,
                 'error': f'Missing required fields: {", ".join(missing_fields)}'
-            }), 400
+            })
         
         # Validate numeric fields
         try:
@@ -286,24 +299,24 @@ def predict():
                     try:
                         candidate_type = float(candidate_type_value_lower)
                     except ValueError:
-                        return jsonify({
+                        return JSONResponse(status_code=400, content={
                             'success': False,
                             'error': f'Invalid candidate type "{candidate_type_value}". Use: new, incumbent, experienced, mixed'
-                        }), 400
+                        })
             else:
                 candidate_type = float(candidate_type_value)
             
             if mla_strength < 0 or alliance_mla_strength < 0 or past_rs_wins < 0:
-                return jsonify({
+                return JSONResponse(status_code=400, content={
                     'success': False,
                     'error': 'All numeric values must be positive'
-                }), 400
+                })
                 
         except (ValueError, TypeError):
-            return jsonify({
+            return JSONResponse(status_code=400, content={
                 'success': False,
                 'error': 'Invalid numeric values provided'
-            }), 400
+            })
         
         # ── Build 9-feature input vector matching training features ────
         # Features: year, party_encoded, mla_strength, alliance_mla_strength,
@@ -340,23 +353,23 @@ def predict():
         # Get party info
         party_info = get_party_info(request_data['party_name'])
 
-        return jsonify({
+        return {
             'success': True,
             'prediction':     int(prediction),
-            'win_probability': round(probability[1] * 100, 2),
+            'win_probability': round(float(probability[1]) * 100, 2),
             'party_name':     request_data['party_name'],
             'party':          request_data['party_name'],
             'party_info':     party_info
-        })
+        }
         
     except Exception as e:
-        return jsonify({
+        return JSONResponse(status_code=500, content={
             'success': False,
             'error': f'An error occurred: {str(e)}'
-        }), 500
+        })
 
-@app.route('/api/stats')
-def get_stats():
+@app.get('/api/stats')
+async def get_stats():
     """API endpoint to get model statistics"""
     if data is None:
         load_and_train_model()
@@ -369,13 +382,13 @@ def get_stats():
     # Party-wise wins
     party_wins = data[data['winner'] == 1].groupby('party').size().to_dict()
     
-    return jsonify({
+    return {
         'success': True,
-        'total_records': total_records,
+        'total_records': int(total_records),
         'unique_parties': unique_parties,
         'years': years,
-        'party_wins': party_wins
-    })
+        'party_wins': {str(k): int(v) for k, v in party_wins.items()}
+    }
 
 if __name__ == '__main__':
     print("=" * 60)
@@ -408,4 +421,4 @@ if __name__ == '__main__':
     print()
     
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    uvicorn.run("app:app", host='0.0.0.0', port=port)
