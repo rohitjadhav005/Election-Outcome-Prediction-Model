@@ -9,6 +9,16 @@ const submitBtn = document.getElementById('submitBtn');
 const errorMessage = document.getElementById('errorMessage');
 const resultSection = document.getElementById('resultSection');
 const formSection = document.getElementById('formSection');
+const startPredictionBtn = document.getElementById('startPredictionBtn');
+const startPredictionContainer = document.getElementById('startPredictionContainer');
+
+// ── Toggle form visibility ────────────────────────────────────
+if (startPredictionBtn) {
+    startPredictionBtn.addEventListener('click', () => {
+        startPredictionContainer.classList.add('hidden');
+        form.classList.remove('hidden');
+    });
+}
 
 // ── Load live stats into banner ───────────────────────────────
 async function loadStats() {
@@ -17,14 +27,18 @@ async function loadStats() {
         const data = await res.json();
         if (!data.success) return;
 
-        document.getElementById('totalRecords').textContent = data.total_records ?? '—';
-        document.getElementById('totalParties').textContent = (data.unique_parties ?? []).length || '—';
+        const totalRecordsEl = document.getElementById('totalRecords');
+        const totalPartiesEl = document.getElementById('totalParties');
+        
+        if (totalRecordsEl) totalRecordsEl.textContent = data.total_records ?? '—';
+        if (totalPartiesEl) totalPartiesEl.textContent = (data.unique_parties ?? []).length || '—';
 
         // Find the party with the most wins
         const wins = data.party_wins ?? {};
         const topParty = Object.entries(wins).sort((a, b) => b[1] - a[1])[0];
-        if (topParty) {
-            document.getElementById('topParty').textContent = `${topParty[0]} (${topParty[1]})`;
+        const topPartyEl = document.getElementById('topParty');
+        if (topParty && topPartyEl) {
+            topPartyEl.textContent = `${topParty[0]} (${topParty[1]})`;
         }
     } catch (e) {
         console.warn('Could not load stats:', e);
@@ -215,6 +229,13 @@ function resetForm() {
     form.reset();
     resultSection.classList.add('hidden');
     formSection.classList.remove('hidden');
+    
+    // Reset toggle state
+    if (startPredictionContainer) {
+        startPredictionContainer.classList.remove('hidden');
+        form.classList.add('hidden');
+    }
+
     hideError();
     document.getElementById('confidenceFill').style.width = '0%';
     document.getElementById('partyInfoBox').classList.add('hidden');

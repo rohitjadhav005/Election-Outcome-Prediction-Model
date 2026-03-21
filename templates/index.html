@@ -19,8 +19,16 @@ and historical data{% endblock %}
             <h2 class="form-title">🔮 Predict Election Outcome</h2>
             <p class="form-description">Enter current party data to predict the 2027 Rajya Sabha outcome</p>
 
+            <!-- Start Prediction Toggle -->
+            <div id="startPredictionContainer" class="text-center" style="margin-top: 20px;">
+                <button type="button" class="submit-btn" id="startPredictionBtn" style="margin: 0 auto;">
+                    <span class="btn-text">Start Prediction</span>
+                    <span class="btn-icon">🚀</span>
+                </button>
+            </div>
+
             <!-- Prediction Form -->
-            <form id="predictionForm" class="prediction-form">
+            <form id="predictionForm" class="prediction-form hidden">
 
                 <!-- Party Name -->
                 <div class="form-group">
@@ -150,5 +158,5 @@ and historical data{% endblock %}
 {% endblock %}
 
 {% block extra_js %}
-<script src="{{ url_for('static', path='js/script.js') }}"></script>
+<script src="{{ url_for('static', path='js/script.js') }}?v=1.1"></script>
 {% endblock %}
