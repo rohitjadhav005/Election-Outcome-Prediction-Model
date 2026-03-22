@@ -5,16 +5,22 @@
 and historical data{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container main-layout">
 
-    <!-- Page Header -->
-    <header class="header">
-        <div class="header-main">
-            <img src="{{ url_for('static', path='images/logo.png') }}" alt="Logo" class="header-logo-img">
-            <h1 class="logo">Election Outcome<br>Predictor</h1>
-        </div>
-        <p class="tagline">Maharashtra Rajya Sabha — AI-Powered Forecasting (1952–2024 Data)</p>
-    </header>
+    <!-- Left Sidebar (Fixed on Desktop / Sticky on Mobile) -->
+    <div class="layout-sidebar">
+        <!-- Page Header -->
+        <header class="header">
+            <div class="header-main">
+                <img src="{{ url_for('static', path='images/logo.png') }}" alt="Logo" class="header-logo-img">
+                <h1 class="logo">Election Outcome<br>Predictor</h1>
+            </div>
+            <p class="tagline">Maharashtra Rajya Sabha — AI-Powered Forecasting (1952–2024 Data)</p>
+        </header>
+    </div>
+
+    <!-- Right Scrollable Content -->
+    <div class="layout-content">
 
     <!-- Prediction Form Card -->
     <section class="form-section" id="formSection">
@@ -178,6 +184,8 @@ and historical data{% endblock %}
             <div class="mini-chart"></div>
         </div>
     </div>
+    
+    </div> <!-- End layout-content -->
 
 </div>
 {% endblock %}
