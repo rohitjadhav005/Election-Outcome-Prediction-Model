@@ -27,6 +27,7 @@ body {
     line-height: 1.6;
     background: #091225;
     background-attachment: fixed;
+    padding-top: 65px;
 }
 
 /* Subtle Animated Stars/Particles Background */
@@ -85,8 +86,10 @@ body::before {
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    width: 100%;
     z-index: 1000;
 }
 
