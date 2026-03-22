@@ -10,15 +10,20 @@
     box-sizing: border-box;
 }
 
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+    touch-action: pan-y;
+}
+
 body {
     font-family: 'Inter', sans-serif;
     min-height: 100vh;
     color: #ffffff;
     line-height: 1.6;
-    position: relative;
     background: #091225;
     background-attachment: fixed;
-    overflow-x: hidden;
 }
 
 /* Subtle Animated Stars/Particles Background */
