@@ -10,7 +10,8 @@
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     overflow-x: hidden;
     width: 100%;
     position: relative;
@@ -261,7 +262,7 @@ body::before {
     font-weight: 500;
     margin: 0 auto;
     line-height: 1.4;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 /* ===================================
