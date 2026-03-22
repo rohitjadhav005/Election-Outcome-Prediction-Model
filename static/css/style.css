@@ -82,10 +82,8 @@ body::before {
    =================================== */
 
 .navbar {
-    background: rgba(10, 25, 47, 0.7);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: transparent;
+    border-bottom: none;
     position: fixed;
     top: 0;
     left: 0;
