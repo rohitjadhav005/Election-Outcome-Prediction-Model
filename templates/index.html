@@ -8,20 +8,24 @@ and historical data{% endblock %}
 <div class="container">
 
     <!-- Page Header -->
-    <header class="header" style="margin-top: 30px;">
-        <h1 class="logo">🗳️ Election Outcome Predictor</h1>
+    <header class="header">
+        <div class="header-main">
+            <img src="{{ url_for('static', path='images/logo.png') }}" alt="Logo" class="header-logo-img">
+            <h1 class="logo">Election Outcome<br>Predictor</h1>
+        </div>
         <p class="tagline">Maharashtra Rajya Sabha — AI-Powered Forecasting (1952–2024 Data)</p>
     </header>
 
     <!-- Prediction Form Card -->
     <section class="form-section" id="formSection">
-        <div class="form-card">
-            <h2 class="form-title">🔮 Predict Election Outcome</h2>
+        <div class="form-card glass-panel">
+            <div class="form-icon-top">🔮</div>
+            <h2 class="form-title">Predict Election Outcome</h2>
             <p class="form-description">Enter current party data to predict the 2027 Rajya Sabha outcome</p>
 
             <!-- Start Prediction Toggle -->
-            <div id="startPredictionContainer" class="text-center" style="margin-top: 20px;">
-                <button type="button" class="submit-btn" id="startPredictionBtn" style="margin: 0 auto;">
+            <div id="startPredictionContainer" style="display: flex; justify-content: center; width: 100%; margin: 30px 0;">
+                <button type="button" class="submit-btn" id="startPredictionBtn">
                     <span class="btn-text">Start Prediction</span>
                     <span class="btn-icon">🚀</span>
                 </button>
@@ -113,7 +117,7 @@ and historical data{% endblock %}
 
     <!-- Result Section -->
     <section id="resultSection" class="result-section hidden">
-        <div class="result-card">
+        <div class="result-card glass-panel">
             <div class="result-header">
                 <h3 class="result-title">Prediction Result</h3>
                 <button class="close-btn" onclick="resetForm()">✕</button>
@@ -153,6 +157,27 @@ and historical data{% endblock %}
             </button>
         </div>
     </section>
+
+    <!-- Dashboard Stats (Bottom Footer Widgets) -->
+    <div class="dashboard-stats">
+        <div class="stat-widget glass-panel">
+            <div class="stat-icon" style="color: #8b5cf6;">👥</div>
+            <div class="stat-label">Total Seats</div>
+            <div class="stat-val">288</div>
+        </div>
+        <div class="stat-widget glass-panel">
+            <div class="stat-icon">
+                <span style="color: #8b5cf6;">👤</span>
+                <span style="color: #facc15; font-size: 1.3rem;">⭐</span>
+            </div>
+            <div class="stat-label">Majority Mark</div>
+            <div class="stat-val">145</div>
+        </div>
+        <div class="stat-widget glass-panel">
+            <div class="stat-label">Seat Trend (1952-2024)</div>
+            <div class="mini-chart"></div>
+        </div>
+    </div>
 
 </div>
 {% endblock %}

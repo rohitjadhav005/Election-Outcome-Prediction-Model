@@ -46,7 +46,7 @@ function displayParties(parties) {
  */
 function createPartyCard(party) {
     const card = document.createElement('div');
-    card.className = 'party-card';
+    card.className = 'party-card glass-panel';
     card.onclick = () => {
         window.location.href = `/party/${encodeURIComponent(party.party_name)}`;
     };
@@ -94,9 +94,9 @@ function showError(message) {
     const partiesGrid = document.getElementById('partiesGrid');
     partiesGrid.innerHTML = `
         <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
-            <div style="background: rgba(44, 62, 80, 0.95); padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1);">
+            <div class="glass-panel" style="padding: 30px; text-align: center;">
                 <div style="font-size: 3rem; margin-bottom: 15px;">⚠️</div>
-                <div style="color: #e74c3c; font-size: 1.2rem; font-weight: 600;">${message}</div>
+                <div style="color: #ef4444; font-size: 1.2rem; font-weight: 600;">${message}</div>
             </div>
         </div>
     `;
