@@ -169,6 +169,16 @@ async def index(request: Request):
     """Render the main prediction page"""
     return templates.TemplateResponse("index.html", {"request": request})
 
+@app.get('/debug-render')
+async def debug_render(request: Request):
+    """Debug route to expose template rendering errors"""
+    import traceback
+    try:
+        resp = templates.TemplateResponse("index.html", {"request": request})
+        return JSONResponse({"status": "ok", "content_length": len(resp.body)})
+    except Exception as e:
+        return JSONResponse({"status": "error", "error": str(e), "trace": traceback.format_exc()})
+
 @app.get('/parties', response_class=HTMLResponse)
 async def parties(request: Request):
     """Render the parties listing page"""
