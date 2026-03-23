@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import uvicorn
@@ -188,6 +188,11 @@ async def party_detail(request: Request, party_name: str):
 async def about(request: Request):
     """Render the about page"""
     return templates.TemplateResponse("about.html", {"request": request})
+
+@app.get('/sw.js')
+async def service_worker():
+    """Serve the Service Worker from the root scope"""
+    return FileResponse('static/js/sw.js', media_type='application/javascript')
 
 # ==================== API ENDPOINTS ====================
 

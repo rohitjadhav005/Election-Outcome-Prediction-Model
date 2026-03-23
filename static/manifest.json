@@ -1,0 +1,27 @@
+{
+  "name": "Election Outcome Prediction",
+  "short_name": "Election Predictor",
+  "description": "Predict election outcomes using machine learning",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d1b2a",
+  "theme_color": "#ff9933",
+  "icons": [
+    {
+      "src": "/static/images/logo.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/images/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

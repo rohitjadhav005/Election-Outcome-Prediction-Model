@@ -9,6 +9,14 @@
     <title>{% block title %}Election Outcome Prediction{% endblock %}</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', path='images/logo.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+    
+    <!-- PWA / Mobile Web App Meta -->
+    <link rel="manifest" href="{{ url_for('static', path='manifest.json') }}">
+    <meta name="theme-color" content="#ff9933">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Election Predictor">
+    
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -66,6 +74,21 @@
 
     <!-- Page-specific JavaScript -->
     {% block extra_js %}{% endblock %}
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
 </body>
 
 </html>
