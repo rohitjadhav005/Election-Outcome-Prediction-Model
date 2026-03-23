@@ -40,17 +40,17 @@
             <!-- Navigation Links -->
             <ul class="nav-menu" id="navMenu" style="margin-left: auto;">
                 <li class="nav-item">
-                    <a href="/" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}">
+                    <a href="/" class="nav-link {% if request.url.path == '/' %}active{% endif %}">
                         Home
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/parties" class="nav-link {% if request.endpoint == 'parties' %}active{% endif %}">
+                    <a href="/parties" class="nav-link {% if request.url.path == '/parties' %}active{% endif %}">
                         Parties
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="/about" class="nav-link {% if request.endpoint == 'about' %}active{% endif %}">
+                    <a href="/about" class="nav-link {% if request.url.path == '/about' %}active{% endif %}">
                         About
                     </a>
                 </li>
