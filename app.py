@@ -192,7 +192,8 @@ async def about(request: Request):
 @app.get('/sw.js')
 async def service_worker():
     """Serve the Service Worker from the root scope"""
-    return FileResponse('static/js/sw.js', media_type='application/javascript')
+    sw_path = os.path.join(os.path.dirname(__file__), 'static', 'js', 'sw.js')
+    return FileResponse(sw_path, media_type='application/javascript')
 
 # ==================== API ENDPOINTS ====================
 
