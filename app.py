@@ -2,6 +2,8 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel, field_validator, model_validator, Field
+from typing import Optional, List, Dict, Any
 import uvicorn
 import pandas as pd
 import numpy as np
@@ -9,6 +11,97 @@ import os
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
+
+# ==================== PYDANTIC SCHEMAS ====================
+
+# ── Candidate-type aliases accepted by the API ─────────────
+_CANDIDATE_TYPE_MAP: dict[str, int] = {
+    'new': 0, 'first-time': 0, 'firsttime': 0, 'fresh': 0,
+    'incumbent': 1, 'experienced': 1, 'experience': 1,
+    'senior': 1, 'veteran': 1, 'returning': 1,
+    'mixed': 2, 'both': 2,
+    '0': 0, '1': 1, '2': 2,
+}
+
+class PredictRequest(BaseModel):
+    """Validated input for the /predict endpoint."""
+    party_name:            str   = Field(..., min_length=1, description="Party name as in the dataset")
+    mla_strength:          float = Field(..., ge=0, le=288,  description="Number of MLAs (0-288)")
+    alliance_mla_strength: float = Field(..., ge=0, le=288,  description="Alliance MLA count (0-288)")
+    past_rs_wins:          float = Field(..., ge=0,           description="Historical Rajya Sabha wins")
+    candidate_type:        Any   = Field(..., description="new | incumbent | mixed  (or 0/1/2)")
+
+    @field_validator('candidate_type', mode='before')
+    @classmethod
+    def parse_candidate_type(cls, v) -> int:
+        """Accept text labels or integers and normalise to 0/1/2."""
+        key = str(v).lower().strip()
+        if key in _CANDIDATE_TYPE_MAP:
+            return _CANDIDATE_TYPE_MAP[key]
+        try:
+            val = int(float(key))
+            if val in (0, 1, 2):
+                return val
+        except (ValueError, TypeError):
+            pass
+        raise ValueError(
+            f'Invalid candidate_type "{v}". Use: new (0), incumbent (1), mixed (2)'
+        )
+
+    @model_validator(mode='after')
+    def alliance_gte_party(self) -> 'PredictRequest':
+        """Alliance strength must be >= party's own MLA count."""
+        if self.alliance_mla_strength < self.mla_strength:
+            raise ValueError(
+                'alliance_mla_strength must be >= mla_strength '
+                f'(got {self.alliance_mla_strength} < {self.mla_strength})'
+            )
+        return self
+
+
+class HistoricalEntry(BaseModel):
+    year:                  int
+    mla_strength:          int
+    alliance_mla_strength: int
+    past_rs_wins:          int
+    winner:                int
+
+class PartyInfo(BaseModel):
+    party_name:               str
+    icon:                     str
+    description:              str
+    current_mla_strength:     int
+    current_alliance_strength:int
+    total_rs_wins:            int
+    win_rate:                 float
+    historical_data:          List[HistoricalEntry]
+
+class PredictResponse(BaseModel):
+    success:         bool
+    prediction:      int
+    win_probability: float
+    party_name:      str
+    party:           str
+    party_info:      Optional[PartyInfo] = None
+
+class PartiesResponse(BaseModel):
+    success: bool
+    parties: List[PartyInfo]
+
+class PartyDetailResponse(BaseModel):
+    success: bool
+    party:   PartyInfo
+
+class StatsResponse(BaseModel):
+    success:        bool
+    total_records:  int
+    unique_parties: List[str]
+    years:          List[int]
+    party_wins:     Dict[str, int]
+
+class ErrorResponse(BaseModel):
+    success: bool = False
+    error:   str
 
 app = FastAPI()
 
@@ -167,14 +260,14 @@ def get_party_info(party_name):
 @app.get('/', response_class=HTMLResponse)
 async def index(request: Request):
     """Render the main prediction page"""
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(request, "index.html")
 
 @app.get('/debug-render')
 async def debug_render(request: Request):
     """Debug route to expose template rendering errors"""
     import traceback
     try:
-        resp = templates.TemplateResponse("index.html", {"request": request})
+        resp = templates.TemplateResponse(request, "index.html")
         return JSONResponse({"status": "ok", "content_length": len(resp.body)})
     except Exception as e:
         return JSONResponse({"status": "error", "error": str(e), "trace": traceback.format_exc()})
@@ -182,22 +275,22 @@ async def debug_render(request: Request):
 @app.get('/parties', response_class=HTMLResponse)
 async def parties(request: Request):
     """Render the parties listing page"""
-    return templates.TemplateResponse("parties.html", {"request": request})
+    return templates.TemplateResponse(request, "parties.html")
 
 @app.get('/party/{party_name}', response_class=HTMLResponse)
 async def party_detail(request: Request, party_name: str):
     """Render individual party detail page"""
     party_info = get_party_info(party_name)
-    
+
     if party_info is None:
         return HTMLResponse(content=f"Party '{party_name}' not found", status_code=404)
-    
-    return templates.TemplateResponse("party_detail.html", {"request": request, "party": party_info})
+
+    return templates.TemplateResponse(request, "party_detail.html", {"party": party_info})
 
 @app.get('/about', response_class=HTMLResponse)
 async def about(request: Request):
     """Render the about page"""
-    return templates.TemplateResponse("about.html", {"request": request})
+    return templates.TemplateResponse(request, "about.html")
 
 @app.get('/sw.js')
 async def service_worker():
@@ -207,204 +300,102 @@ async def service_worker():
 
 # ==================== API ENDPOINTS ====================
 
-@app.get('/api/parties')
+@app.get('/api/parties', response_model=PartiesResponse)
 async def api_parties():
     """API endpoint to get all parties"""
     if data is None:
         load_and_train_model()
-    
-    parties_list = data['party'].unique().tolist()
-    parties_info = []
-    
-    for party_name in parties_list:
-        if party_name != 'Independent':  # Skip independent for main listing
-            info = get_party_info(party_name)
-            if info:
-                parties_info.append(info)
-    
-    # Sort by current MLA strength
-    parties_info.sort(key=lambda x: x['current_mla_strength'], reverse=True)
-    
-    return {
-        'success': True,
-        'parties': parties_info
-    }
 
-@app.get('/api/party/{party_name}')
+    parties_info: List[PartyInfo] = []
+    for party_name in data['party'].unique():
+        if party_name == 'Independent':
+            continue
+        raw = get_party_info(party_name)
+        if raw:
+            parties_info.append(PartyInfo(**raw))
+
+    parties_info.sort(key=lambda p: p.current_mla_strength, reverse=True)
+
+    return PartiesResponse(success=True, parties=parties_info)
+
+
+@app.get('/api/party/{party_name}', response_model=PartyDetailResponse)
 async def api_party_detail(party_name: str):
     """API endpoint to get detailed party information"""
-    party_info = get_party_info(party_name)
-    
-    if party_info is None:
-        return JSONResponse(status_code=404, content={
-            'success': False,
-            'error': f'Party "{party_name}" not found'
-        })
-    
-    return {
-        'success': True,
-        'party': party_info
-    }
+    raw = get_party_info(party_name)
+    if raw is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f'Party "{party_name}" not found',
+        )
+    return PartyDetailResponse(success=True, party=PartyInfo(**raw))
 
-@app.post('/predict')
-async def predict(request: Request):
+@app.post('/predict', response_model=PredictResponse)
+async def predict(body: PredictRequest):
     """
-    Simplified prediction using ONLY dataset features:
-    - party_name
-    - mla_strength
-    - alliance_mla_strength
-    - past_rs_wins
-    - candidate_type
+    Predict Rajya Sabha election outcome.
+
+    Accepts a validated `PredictRequest` body. Pydantic handles all
+    type coercion, range checks, and alias resolution for candidate_type
+    before this function is even called.
     """
+    # Ensure model is loaded
+    if model is None:
+        load_and_train_model()
+
+    # Encode party name — fall back to first known class if unseen
     try:
-        # Ensure model is loaded
-        if model is None:
-            load_and_train_model()
-        
-        # Get JSON data from request
-        try:
-            request_data = await request.json()
-        except Exception:
-            request_data = {}
-        
-        # Validate required fields (only dataset features)
-        required_fields = ['party_name', 'mla_strength', 'alliance_mla_strength', 'past_rs_wins', 'candidate_type']
-        
-        missing_fields = [field for field in required_fields if field not in request_data or request_data[field] == '']
-        if missing_fields:
-            return JSONResponse(status_code=400, content={
-                'success': False,
-                'error': f'Missing required fields: {", ".join(missing_fields)}'
-            })
-        
-        # Validate numeric fields
-        try:
-            mla_strength = float(request_data['mla_strength'])
-            alliance_mla_strength = float(request_data['alliance_mla_strength'])
-            past_rs_wins = float(request_data['past_rs_wins'])
-            
-            # Handle candidate_type - can be text or number
-            candidate_type_value = request_data['candidate_type']
-            
-            # Map text values to numbers
-            # Accepted: new=0, incumbent=1, mixed=2
-            # Also accepts common aliases (experienced, senior, veteran → incumbent)
-            candidate_type_mapping = {
-                'new': 0,
-                'first-time': 0,
-                'firsttime': 0,
-                'fresh': 0,
-                'incumbent': 1,
-                'experienced': 1,
-                'experience': 1,
-                'senior': 1,
-                'veteran': 1,
-                'returning': 1,
-                'mixed': 2,
-                'both': 2,
-                '0': 0,
-                '1': 1,
-                '2': 2
-            }
-            
-            if isinstance(candidate_type_value, str):
-                candidate_type_value_lower = candidate_type_value.lower().strip()
-                if candidate_type_value_lower in candidate_type_mapping:
-                    candidate_type = candidate_type_mapping[candidate_type_value_lower]
-                else:
-                    try:
-                        candidate_type = float(candidate_type_value_lower)
-                    except ValueError:
-                        return JSONResponse(status_code=400, content={
-                            'success': False,
-                            'error': f'Invalid candidate type "{candidate_type_value}". Use: new, incumbent, experienced, mixed'
-                        })
-            else:
-                candidate_type = float(candidate_type_value)
-            
-            if mla_strength < 0 or alliance_mla_strength < 0 or past_rs_wins < 0:
-                return JSONResponse(status_code=400, content={
-                    'success': False,
-                    'error': 'All numeric values must be positive'
-                })
-                
-        except (ValueError, TypeError):
-            return JSONResponse(status_code=400, content={
-                'success': False,
-                'error': 'Invalid numeric values provided'
-            })
-        
-        # ── Build 9-feature input vector matching training features ────
-        # Features: year, party_encoded, mla_strength, alliance_mla_strength,
-        #           past_rs_wins, candidate_type, has_majority, mla_share, alliance_share
+        party_encoded = int(le_party.transform([body.party_name])[0])
+    except ValueError:
+        party_encoded = int(le_party.transform([le_party.classes_[0]])[0])
 
-        # Encode party name — fall back to -1 (unknown) if not seen in training
-        party_name_input = request_data['party_name']
-        try:
-            party_encoded = int(le_party.transform([party_name_input])[0])
-        except ValueError:
-            # Unknown party: use mean encoding as neutral fallback
-            party_encoded = int(le_party.transform([le_party.classes_[0]])[0])
+    has_majority   = 1 if body.alliance_mla_strength >= 145 else 0
+    mla_share      = body.mla_strength / 288
+    alliance_share = body.alliance_mla_strength / 288
 
-        has_majority   = 1 if alliance_mla_strength >= 145 else 0
-        mla_share      = mla_strength / 288
-        alliance_share = alliance_mla_strength / 288
+    # ── Build 9-feature input vector matching training features ────
+    prediction_data = np.array([[
+        2027,                          # prediction year
+        party_encoded,                 # party identity
+        body.mla_strength,
+        body.alliance_mla_strength,
+        body.past_rs_wins,
+        body.candidate_type,           # already 0/1/2 after validation
+        has_majority,
+        mla_share,
+        alliance_share,
+    ]])
 
-        prediction_data = np.array([[
-            2027,                   # prediction year
-            party_encoded,          # party identity
-            mla_strength,
-            alliance_mla_strength,
-            past_rs_wins,
-            candidate_type,
-            has_majority,           # alliance majority flag
-            mla_share,              # normalised MLA %
-            alliance_share          # normalised alliance %
-        ]])
+    prediction  = model.predict(prediction_data)[0]
+    probability = model.predict_proba(prediction_data)[0]
 
-        # Get prediction and probability from Random Forest model
-        prediction  = model.predict(prediction_data)[0]
-        probability = model.predict_proba(prediction_data)[0]
+    party_info_raw = get_party_info(body.party_name)
+    party_info = PartyInfo(**party_info_raw) if party_info_raw else None
 
-        # Get party info
-        party_info = get_party_info(request_data['party_name'])
+    return PredictResponse(
+        success=True,
+        prediction=int(prediction),
+        win_probability=round(float(probability[1]) * 100, 2),
+        party_name=body.party_name,
+        party=body.party_name,
+        party_info=party_info,
+    )
 
-        return {
-            'success': True,
-            'prediction':     int(prediction),
-            'win_probability': round(float(probability[1]) * 100, 2),
-            'party_name':     request_data['party_name'],
-            'party':          request_data['party_name'],
-            'party_info':     party_info
-        }
-        
-    except Exception as e:
-        return JSONResponse(status_code=500, content={
-            'success': False,
-            'error': f'An error occurred: {str(e)}'
-        })
-
-@app.get('/api/stats')
+@app.get('/api/stats', response_model=StatsResponse)
 async def get_stats():
     """API endpoint to get model statistics"""
     if data is None:
         load_and_train_model()
-    
-    # Calculate statistics
-    total_records = len(data)
-    unique_parties = data['party'].unique().tolist()
-    years = sorted(data['year'].unique().tolist())
-    
-    # Party-wise wins
+
     party_wins = data[data['winner'] == 1].groupby('party').size().to_dict()
-    
-    return {
-        'success': True,
-        'total_records': int(total_records),
-        'unique_parties': unique_parties,
-        'years': years,
-        'party_wins': {str(k): int(v) for k, v in party_wins.items()}
-    }
+
+    return StatsResponse(
+        success=True,
+        total_records=int(len(data)),
+        unique_parties=data['party'].unique().tolist(),
+        years=sorted(data['year'].unique().tolist()),
+        party_wins={str(k): int(v) for k, v in party_wins.items()},
+    )
 
 if __name__ == '__main__':
     print("=" * 60)
