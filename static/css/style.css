@@ -338,13 +338,15 @@ body::before {
     animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     /* glass — blue-indigo tint */
     background: rgba(255, 255, 255, 0.10);
-    backdrop-filter: blur(20px) saturate(180%);   /* ✅ was blur(2px) */
+    backdrop-filter: blur(20px) saturate(180%);
+    /* ✅ was blur(2px) */
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.65);
     border-radius: 2rem;
     box-shadow: 0 8px 32px rgba(31, 38, 135, 0.28),
         inset 0 4px 20px rgba(255, 255, 255, 0.15);
-    overflow: hidden;   /* clip the ::after shine to card bounds */
+    overflow: hidden;
+    /* clip the ::after shine to card bounds */
 }
 
 .form-card::after,
@@ -357,7 +359,8 @@ body::before {
     box-shadow: inset -10px -8px 0px -11px rgba(255, 255, 255, 1),
         inset 0px -9px 0px -8px rgba(255, 255, 255, 1);
     opacity: 0.55;
-    z-index: 1;         /* ✅ was -1 — was hidden behind card background */
+    z-index: 1;
+    /* ✅ was -1 — was hidden behind card background */
     pointer-events: none;
 }
 
@@ -607,7 +610,8 @@ body::before {
     overflow: hidden;
     /* glass — purple-indigo tint */
     background: rgba(255, 255, 255, 0.09);
-    backdrop-filter: blur(20px) saturate(180%);   /* ✅ was blur(2px) */
+    backdrop-filter: blur(20px) saturate(180%);
+    /* ✅ was blur(2px) */
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.60);
     border-radius: 2rem;
@@ -624,7 +628,8 @@ body::before {
     box-shadow: inset -10px -8px 0px -11px rgba(255, 255, 255, 1),
         inset 0px -9px 0px -8px rgba(255, 255, 255, 1);
     opacity: 0.55;
-    z-index: 1;         /* ✅ was -1 */
+    z-index: 1;
+    /* ✅ was -1 */
     pointer-events: none;
 }
 
@@ -842,7 +847,8 @@ body::before {
     border: 1px solid rgba(255, 255, 255, 0.35);
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(20px) saturate(180%);   /* ✅ was blur(2px) */
+    backdrop-filter: blur(20px) saturate(180%);
+    /* ✅ was blur(2px) */
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     box-shadow: 0 4px 16px rgba(31, 38, 135, 0.18),
         inset 0 2px 8px rgba(255, 255, 255, 0.10);
@@ -857,7 +863,8 @@ body::before {
     box-shadow: inset -10px -8px 0px -11px rgba(255, 255, 255, 1),
         inset 0px -9px 0px -8px rgba(255, 255, 255, 1);
     opacity: 0.50;
-    z-index: 1;         /* ✅ was -1 */
+    z-index: 1;
+    /* ✅ was -1 */
     pointer-events: none;
 }
 
@@ -901,7 +908,8 @@ body::before {
     position: relative;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.09);
-    backdrop-filter: blur(20px) saturate(180%);   /* ✅ was blur(2px) */
+    backdrop-filter: blur(20px) saturate(180%);
+    /* ✅ was blur(2px) */
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.60);
     border-radius: 2rem;
@@ -918,7 +926,8 @@ body::before {
     box-shadow: inset -10px -8px 0px -11px rgba(255, 255, 255, 1),
         inset 0px -9px 0px -8px rgba(255, 255, 255, 1);
     opacity: 0.55;
-    z-index: 1;         /* ✅ was -1 */
+    z-index: 1;
+    /* ✅ was -1 */
     pointer-events: none;
 }
 
