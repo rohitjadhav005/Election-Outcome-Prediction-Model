@@ -26,7 +26,11 @@ body {
     min-height: 100vh;
     color: #ffffff;
     line-height: 1.6;
-    background: #091225;
+    background:
+        radial-gradient(circle at 50% 0%, #1e3a8a, transparent 50%),
+        radial-gradient(circle at 80% 100%, #9333ea, transparent 50%),
+        radial-gradient(circle at 20% 80%, #7e22ce, transparent 40%),
+        linear-gradient(135deg, #020617, #0f172a);
     background-attachment: fixed;
     padding-top: 65px;
 }
