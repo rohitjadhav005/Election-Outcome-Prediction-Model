@@ -12,6 +12,18 @@ const formSection = document.getElementById('formSection');
 const startPredictionBtn = document.getElementById('startPredictionBtn');
 const startPredictionContainer = document.getElementById('startPredictionContainer');
 
+// ── Party Data Defaults (2024) ────────────────────────────────
+const PARTY_DEFAULTS = {
+    'BJP':         { mla: 132, alliance: 235, wins: 15, type: 'experienced' },
+    'SS(Shinde)':  { mla: 57,  alliance: 235, wins: 1,  type: 'experienced' },
+    'NCP(Ajit)':   { mla: 41,  alliance: 235, wins: 1,  type: 'experienced' },
+    'INC':         { mla: 16,  alliance: 50,  wins: 10, type: 'new' },
+    'SS(UBT)':     { mla: 20,  alliance: 50,  wins: 0,  type: 'new' },
+    'NCP(Sharad)': { mla: 10,  alliance: 50,  wins: 0,  type: 'new' },
+    'SS':          { mla: 73,  alliance: 138, wins: 5,  type: 'experienced' },
+    'NCP':         { mla: 71,  alliance: 141, wins: 9,  type: 'experienced' }
+};
+
 // ── Toggle form visibility ────────────────────────────────────
 if (startPredictionBtn) {
     startPredictionBtn.addEventListener('click', () => {
@@ -89,7 +101,7 @@ form.addEventListener('submit', async (e) => {
         setLoadingState(false);
 
         if (result.success) {
-            displayResult(result);
+            displayResult(result, payload);
         } else {
             showError(result.error || 'An error occurred. Please try again.');
         }
@@ -125,7 +137,7 @@ function validateForm(data) {
 }
 
 // ── Display result ────────────────────────────────────────────
-function displayResult(result) {
+function displayResult(result, payload) {
     const resultCard = document.querySelector('.result-card');
     const resultIcon = document.getElementById('resultIcon');
     const resultPrediction = document.getElementById('resultPrediction');
@@ -155,6 +167,9 @@ function displayResult(result) {
         confidenceFill.style.width = winProb + '%';
     }, 100);
 
+    // Display Prediction Highlights
+    displayHighlights(result, payload);
+
     // Show party background stats if returned by backend
     if (result.party_info) {
         displayPartyInfo(result.party_info);
@@ -166,6 +181,77 @@ function displayResult(result) {
     formSection.classList.add('hidden');
     resultSection.classList.remove('hidden');
     resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ── Highlights Logic ──────────────────────────────────────────
+function displayHighlights(result, inputs) {
+    const grid = document.getElementById('highlightsGrid');
+    const floorNote = document.getElementById('floorNote');
+    grid.innerHTML = '';
+
+    const alliance = parseFloat(inputs.alliance_mla_strength);
+    const mla = parseFloat(inputs.mla_strength);
+    const winProb = result.win_probability;
+
+    // 1. Majority Signal
+    if (alliance >= 145) {
+        addHighlight('Majority Alliance ✓', 'positive');
+    } else if (alliance >= 130) {
+        addHighlight('Near Majority Threshold', 'neutral');
+    } else {
+        addHighlight('Below Majority Mark', 'negative');
+    }
+
+    // 2. MLA Centrality (mla_ratio)
+    const ratio = mla / alliance;
+    if (ratio > 0.6) {
+        addHighlight('Dominant Party in Alliance', 'positive');
+    } else if (ratio < 0.2) {
+        addHighlight('Junior Partner Profile', 'neutral');
+    }
+
+    // 3. Experience
+    if (inputs.candidate_type === 'experienced') {
+        addHighlight('Incumbent Advantage', 'positive');
+    }
+
+    // 4. RS Wins Track Record
+    if (parseFloat(inputs.past_rs_wins) > 10) {
+        addHighlight('Strong Wins History', 'positive');
+    }
+
+    // Floor Note
+    floorNote.style.display = (winProb <= 5.1) ? 'block' : 'none';
+}
+
+function addHighlight(text, type) {
+    const grid = document.getElementById('highlightsGrid');
+    const div = document.createElement('div');
+    div.className = `highlight-chip ${type}`;
+    div.textContent = text;
+    grid.appendChild(div);
+}
+
+// ── Majority Indicator Logic ──────────────────────────────────
+function updateMajorityIndicator() {
+    const allianceVal = parseFloat(document.getElementById('allianceMlaStrength').value) || 0;
+    const bar = document.getElementById('majorityBarFill');
+    const status = document.getElementById('majorityStatus');
+
+    // Percentage of 288 seats
+    const pct = Math.min((allianceVal / 288) * 100, 100);
+    bar.style.width = pct + '%';
+
+    if (allianceVal >= 145) {
+        status.textContent = 'Majority Reached! 🌟';
+        status.className = 'majority-status-text status-majority';
+    } else if (allianceVal >= 130) {
+        status.textContent = 'Critical Threshold ⚠️';
+        status.className = 'majority-status-text status-near';
+    } else {
+        status.textContent = 'Below Majority Mark';
+        status.className = 'majority-status-text status-weak';
+    }
 }
 
 // ── Party info box ────────────────────────────────────────────
@@ -259,6 +345,30 @@ document.addEventListener('DOMContentLoaded', () => {
             this.value = this.value.replace(/[^0-9]/g, '');
         });
     });
+
+    // Party Auto-fill and Majority Update
+    const partySelect = document.getElementById('partyName');
+    const allianceInput = document.getElementById('allianceMlaStrength');
+
+    partySelect.addEventListener('change', () => {
+        const val = partySelect.value;
+        if (PARTY_DEFAULTS[val]) {
+            const def = PARTY_DEFAULTS[val];
+            document.getElementById('mlaStrength').value = def.mla;
+            allianceInput.value = def.alliance;
+            document.getElementById('pastRsWins').value = def.wins;
+            document.getElementById('candidateType').value = def.type;
+            updateMajorityIndicator();
+        }
+    });
+
+    allianceInput.addEventListener('input', updateMajorityIndicator);
+    
+    // Initial call in case of auto-fill from URL
+    if (partySelect.value) {
+        const event = new Event('change');
+        partySelect.dispatchEvent(event);
+    }
 });
 
 // Prevent accidental Enter submission

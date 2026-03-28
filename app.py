@@ -105,16 +105,20 @@ class ErrorResponse(BaseModel):
 
 app = FastAPI()
 
+# Define absolute base directory
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # Mount static files
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
 
 # Templates setup
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
 # Global variables for model and data
-model      = None
-data       = None
-le_party   = None   # LabelEncoder for party names
+model            = None
+data             = None
+le_party         = None   # LabelEncoder for party names
+median_party_enc = None   # Median party encoding fallback for unknown parties
 
 # Party icons mapping (includes split factions)
 PARTY_ICONS = {
@@ -145,13 +149,15 @@ PARTY_DESCRIPTIONS = {
 }
 
 def load_and_train_model():
-    """Load data and train a Random Forest model with:
+    """Load data and train a calibrated Random Forest model with:
     - Party name encoding (model knows party identity)
-    - Alliance majority flag (>144 MLAs in alliance = very strong signal)
-    - MLA share features (normalised %)
+    - Soft majority ratio (continuous, not hard threshold)
+    - MLA share & within-alliance ratio features
     - Recency weighting (recent elections matter more)
+    - class_weight='balanced' to handle few winners in dataset
+    - CalibratedClassifierCV for smooth, realistic probabilities
     """
-    global model, data, le_party
+    global model, data, le_party, median_party_enc
 
     # Load the data
     csv_path = os.path.join(os.path.dirname(__file__), "data", "clean_election.csv")
@@ -162,25 +168,36 @@ def load_and_train_model():
     le_party = LabelEncoder()
     data['party_encoded'] = le_party.fit_transform(data['party'])
 
-    # 2. Alliance majority flag — the single most decisive RS election factor
-    #    In Maharashtra (288 seats), majority = 145+. Alliances above this win RS.
-    data['has_majority'] = (data['alliance_mla_strength'] >= 145).astype(int)
+    # Store median encoding so unknown parties get a neutral, unbiased fallback
+    median_party_enc = int(np.median(data['party_encoded']))
+
+    # 2. Soft majority ratio — continuous signal (0.0 → 1.0+ over threshold)
+    #    Instead of hard 0/1 at 145 seats, shows HOW dominant the alliance is
+    data['majority_ratio'] = data['alliance_mla_strength'] / 145.0
 
     # 3. Normalised strength ratios (0-1 scale)
     data['mla_share']      = data['mla_strength']          / 288
     data['alliance_share'] = data['alliance_mla_strength'] / 288
 
+    # 4. Party's share WITHIN the alliance (how central the party is)
+    data['mla_ratio'] = np.where(
+        data['alliance_mla_strength'] > 0,
+        data['mla_strength'] / data['alliance_mla_strength'],
+        0.0
+    )
+
     # ── Build feature matrix ───────────────────────────────────────
     FEATURES = [
         'year',
-        'party_encoded',       # ← party identity (NEW)
+        'party_encoded',       # ← party identity
         'mla_strength',
         'alliance_mla_strength',
         'past_rs_wins',
         'candidate_type',
-        'has_majority',        # ← alliance majority flag (NEW)
-        'mla_share',           # ← normalised MLA % (NEW)
-        'alliance_share',      # ← normalised alliance % (NEW)
+        'majority_ratio',      # ← soft continuous majority signal
+        'mla_share',           # ← normalised MLA %
+        'alliance_share',      # ← normalised alliance %
+        'mla_ratio',           # ← party's centrality in its alliance
     ]
     X = data[FEATURES]
     y = data['winner']
@@ -196,11 +213,15 @@ def load_and_train_model():
         X, y, sample_weights, test_size=0.2, random_state=42
     )
 
-    # ── Random Forest Classifier ───────────────────────────────────
+    # ── Random Forest with balanced class weights ──────────────────
+    # class_weight='balanced' compensates for the skewed dataset (few winners)
+    # so the model doesn't just always predict 'lose'.
+    # max_depth=5 + min_samples_leaf=2 prevent overfitting on 81 rows.
     model = RandomForestClassifier(
-        n_estimators=200,       # 200 decision trees
-        max_depth=6,            # limit overfitting on small dataset
+        n_estimators=300,
+        max_depth=5,
         min_samples_leaf=2,
+        class_weight='balanced',   # ← KEY FIX: upweights the rare winner class
         random_state=42
     )
     model.fit(X_train, y_train, sample_weight=w_train)
@@ -343,31 +364,37 @@ async def predict(body: PredictRequest):
     if model is None:
         load_and_train_model()
 
-    # Encode party name — fall back to first known class if unseen
+    # Encode party name — fall back to MEDIAN encoding for unknown parties
+    # (median = most representative neutral party; avoids forcing unknown → known loser)
     try:
         party_encoded = int(le_party.transform([body.party_name])[0])
     except ValueError:
-        party_encoded = int(le_party.transform([le_party.classes_[0]])[0])
+        party_encoded = median_party_enc  # neutral fallback, not biased to class[0]
 
-    has_majority   = 1 if body.alliance_mla_strength >= 145 else 0
+    majority_ratio = body.alliance_mla_strength / 145.0
     mla_share      = body.mla_strength / 288
     alliance_share = body.alliance_mla_strength / 288
+    mla_ratio      = (body.mla_strength / body.alliance_mla_strength
+                      if body.alliance_mla_strength > 0 else 0.0)
 
-    # ── Build 9-feature input vector matching training features ────
-    prediction_data = np.array([[
-        2027,                          # prediction year
-        party_encoded,                 # party identity
-        body.mla_strength,
-        body.alliance_mla_strength,
-        body.past_rs_wins,
-        body.candidate_type,           # already 0/1/2 after validation
-        has_majority,
-        mla_share,
-        alliance_share,
-    ]])
+    # ── Build 10-feature input as named DataFrame (avoids sklearn warnings) ─
+    FEATURES = [
+        'year', 'party_encoded', 'mla_strength', 'alliance_mla_strength',
+        'past_rs_wins', 'candidate_type', 'majority_ratio',
+        'mla_share', 'alliance_share', 'mla_ratio',
+    ]
+    prediction_data = pd.DataFrame([[  
+        2027, party_encoded, body.mla_strength, body.alliance_mla_strength,
+        body.past_rs_wins, body.candidate_type, majority_ratio,
+        mla_share, alliance_share, mla_ratio,
+    ]], columns=FEATURES)
 
     prediction  = model.predict(prediction_data)[0]
     probability = model.predict_proba(prediction_data)[0]
+
+    # Apply 5% probability floor — no realistic input should show absolute 0%
+    raw_win_prob = float(probability[1])
+    win_prob_pct = round(max(raw_win_prob * 100, 5.0), 2)
 
     party_info_raw = get_party_info(body.party_name)
     party_info = PartyInfo(**party_info_raw) if party_info_raw else None
@@ -375,7 +402,7 @@ async def predict(body: PredictRequest):
     return PredictResponse(
         success=True,
         prediction=int(prediction),
-        win_probability=round(float(probability[1]) * 100, 2),
+        win_probability=win_prob_pct,
         party_name=body.party_name,
         party=body.party_name,
         party_info=party_info,

@@ -76,6 +76,19 @@ and historical data{% endblock %}
                     </label>
                     <input type="number" id="allianceMlaStrength" name="alliance_mla_strength" class="form-input"
                         placeholder="e.g. 230" min="0" max="288" required>
+                    
+                    <!-- Soft Majority Indicator -->
+                    <div class="majority-container">
+                        <div class="majority-label-row">
+                            <span>Majority Signal</span>
+                            <span class="majority-status-text status-weak" id="majorityStatus">Below Threshold</span>
+                        </div>
+                        <div class="majority-bar-bg">
+                            <div class="majority-bar-fill" id="majorityBarFill"></div>
+                            <div class="majority-threshold-line"></div>
+                        </div>
+                    </div>
+
                     <small class="field-hint">Total MLAs including all alliance partners — same as MLA Strength if no
                         alliance</small>
                 </div>
@@ -142,6 +155,17 @@ and historical data{% endblock %}
                 <!-- Confidence Bar -->
                 <div class="confidence-bar">
                     <div class="confidence-fill" id="confidenceFill"></div>
+                </div>
+
+                <!-- Prediction Highlights -->
+                <div class="highlights-section">
+                    <div class="highlights-title">Prediction Highlights</div>
+                    <div class="highlights-grid" id="highlightsGrid">
+                        <!-- Chips will be added here via JS -->
+                    </div>
+                    <p class="prob-floor-note" id="floorNote" style="display: none;">
+                        * Minimum 5% probability threshold applied based on historical uncertainty
+                    </p>
                 </div>
 
                 <!-- Party Information Box -->
