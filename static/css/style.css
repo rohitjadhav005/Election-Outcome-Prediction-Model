@@ -177,8 +177,7 @@ body::before {
 
 .nav-link:hover,
 .nav-link.active {
-    background: rgba(200, 175, 130, 0.20);
-    color: #3d2e1a;
+    color: #a06e2a;
 }
 
 .nav-toggle {
@@ -213,13 +212,15 @@ body::before {
         right: -100%;
         top: 65px;
         flex-direction: column;
-        background: rgba(255, 250, 240, 0.95);
-        backdrop-filter: blur(20px);
+        background: rgba(255, 252, 246, 0.75);
+        backdrop-filter: blur(24px) saturate(160%);
+        -webkit-backdrop-filter: blur(24px) saturate(160%);
         width: 100%;
         text-align: center;
         transition: right 0.3s ease;
         padding: 20px 0;
-        border-bottom: 1px solid rgba(200, 185, 155, 0.4);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+        box-shadow: 0 10px 30px rgba(90, 70, 40, 0.12);
     }
 
     .nav-menu.active {
@@ -242,6 +243,11 @@ body::before {
         padding: 15px;
         border-radius: 0;
         border-bottom: 1px solid rgba(200, 185, 155, 0.15);
+        font-size: 1.1rem;
+    }
+
+    .nav-item:last-child .nav-link {
+        border-bottom: none;
     }
 }
 
