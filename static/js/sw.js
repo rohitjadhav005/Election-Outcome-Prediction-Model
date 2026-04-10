@@ -1,4 +1,4 @@
-const CACHE_NAME = 'election-predictor-v1';
+const CACHE_NAME = 'election-predictor-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/parties',
@@ -36,20 +36,20 @@ self.addEventListener('fetch', (event) => {
   // Only cache GET requests
   if (event.request.method !== 'GET') return;
 
+  // Network-First Strategy 
+  // Always fetch latest from server so users don't have to reload for updates
   event.respondWith(
-    caches.match(event.request)
+    fetch(event.request)
       .then((response) => {
-        // Return cached version or fetch from network
-        return response || fetch(event.request).then((fetchResponse) => {
-          // Cache the fetched response for future
-          return caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, fetchResponse.clone());
-            return fetchResponse;
-          });
+        // Save the successful network response to cache
+        return caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, response.clone());
+          return response;
         });
       })
       .catch(() => {
-        // If both cache and network fail, you could return a custom offline page here
+        // If network fails (e.g., offline), fallback to the cache
+        return caches.match(event.request);
       })
   );
 });
