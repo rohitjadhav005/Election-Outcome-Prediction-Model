@@ -350,25 +350,132 @@ document.addEventListener('DOMContentLoaded', () => {
     const partySelect = document.getElementById('partyName');
     const allianceInput = document.getElementById('allianceMlaStrength');
 
-    partySelect.addEventListener('change', () => {
+    function handlePartyChange() {
         const val = partySelect.value;
         if (PARTY_DEFAULTS[val]) {
             const def = PARTY_DEFAULTS[val];
             document.getElementById('mlaStrength').value = def.mla;
             allianceInput.value = def.alliance;
             document.getElementById('pastRsWins').value = def.wins;
-            document.getElementById('candidateType').value = def.type;
+            
+            // Set Candidate Type
+            const candidateInput = document.getElementById('candidateType');
+            candidateInput.value = def.type;
+            
+            // Update candidate custom select text
+            const candWrapper = document.getElementById('candidateTypeWrapper');
+            if (candWrapper) {
+                const opt = candWrapper.querySelector(`.custom-select-option[data-value="${def.type}"]`);
+                if (opt) {
+                    candWrapper.querySelector('.custom-select-text').textContent = opt.textContent;
+                    candWrapper.querySelector('.custom-select-text').classList.remove('placeholder-text');
+                    candWrapper.querySelectorAll('.custom-select-option').forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                }
+            }
+
             updateMajorityIndicator();
+        }
+    }
+
+    if (allianceInput) {
+        allianceInput.addEventListener('input', updateMajorityIndicator);
+    }
+    
+    // Initial call in case of auto-fill from URL
+    if (partySelect && partySelect.value) {
+        handlePartyChange();
+    }
+
+    /* ===================================
+       CUSTOM SELECT UI LOGIC
+       =================================== */
+    
+    const customSelectWrappers = document.querySelectorAll('.custom-select-wrapper');
+
+    customSelectWrappers.forEach(wrapper => {
+        const trigger = wrapper.querySelector('.custom-select-trigger');
+        const list = wrapper.querySelector('.custom-options-list');
+        const textSpan = wrapper.querySelector('.custom-select-text');
+        const hiddenInput = wrapper.querySelector('input[type="hidden"]');
+        const options = wrapper.querySelectorAll('.custom-select-option');
+        const backdrop = wrapper.querySelector('.custom-select-backdrop');
+        const closeBtn = wrapper.querySelector('.close-select-btn');
+
+        // Toggle open/close
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = wrapper.classList.contains('open');
+            
+            // Close all others
+            document.querySelectorAll('.custom-select-wrapper').forEach(w => {
+                w.classList.remove('open');
+                const bd = w.querySelector('.custom-select-backdrop');
+                if (bd) bd.classList.remove('show');
+            });
+
+            if (!isOpen) {
+                wrapper.classList.add('open');
+                if (backdrop) backdrop.classList.add('show');
+            }
+        });
+
+        // Close on backdrop click (mobile)
+        if (backdrop) {
+            backdrop.addEventListener('click', (e) => {
+                e.stopPropagation();
+                wrapper.classList.remove('open');
+                backdrop.classList.remove('show');
+            });
+        }
+
+        // Close on mobile close button
+        if (closeBtn) {
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                wrapper.classList.remove('open');
+                if (backdrop) backdrop.classList.remove('show');
+            });
+        }
+
+        // Option selection
+        options.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                // Set text and value
+                textSpan.textContent = option.textContent;
+                textSpan.classList.remove('placeholder-text');
+                const val = option.getAttribute('data-value');
+                hiddenInput.value = val;
+
+                // Update selected state
+                options.forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+
+                // Close dropdown
+                wrapper.classList.remove('open');
+                if (backdrop) backdrop.classList.remove('show');
+                
+                // Trigger change logic
+                if (hiddenInput.id === 'partyName') {
+                    handlePartyChange();
+                }
+            });
+        });
+    });
+
+    // Close when clicking outside (desktop)
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.custom-select-wrapper')) {
+            document.querySelectorAll('.custom-select-wrapper').forEach(w => {
+                w.classList.remove('open');
+                const bd = w.querySelector('.custom-select-backdrop');
+                if (bd) bd.classList.remove('show');
+            });
         }
     });
 
-    allianceInput.addEventListener('input', updateMajorityIndicator);
-    
-    // Initial call in case of auto-fill from URL
-    if (partySelect.value) {
-        const event = new Event('change');
-        partySelect.dispatchEvent(event);
-    }
 });
 
 // Prevent accidental Enter submission

@@ -39,23 +39,37 @@ and historical data{% endblock %}
                     <label for="partyName" class="form-label">
                         <span class="label-text">Party Name</span>
                     </label>
-                    <select id="partyName" name="party_name" class="form-select" required>
-                        <option value="">Select a party</option>
-                        <optgroup label="🟠 Mahayuti Alliance (2024 — 235 MLAs)">
-                            <option value="BJP">🟠 BJP — Bharatiya Janata Party (132 MLAs)</option>
-                            <option value="SS(Shinde)">🟡 Shiv Sena – Shinde (57 MLAs)</option>
-                            <option value="NCP(Ajit)">🟢 NCP – Ajit Pawar (41 MLAs)</option>
-                        </optgroup>
-                        <optgroup label="🔵 MVA Alliance (2024 — 50 MLAs)">
-                            <option value="INC">🔵 INC — Indian National Congress (16 MLAs)</option>
-                            <option value="SS(UBT)">🔥 Shiv Sena – UBT / Uddhav (20 MLAs)</option>
-                            <option value="NCP(Sharad)">🫐 NCP – Sharad Pawar (10 MLAs)</option>
-                        </optgroup>
-                        <optgroup label="📜 Legacy / Historical">
-                            <option value="SS">Shiv Sena (pre-2022 split)</option>
-                            <option value="NCP">NCP (pre-2023 split)</option>
-                        </optgroup>
-                    </select>
+                    <div class="custom-select-wrapper" id="partySelectWrapper">
+                        <input type="hidden" id="partyName" name="party_name" required>
+                        <div class="custom-select-trigger" tabindex="0">
+                            <span class="custom-select-text placeholder-text">Select a party</span>
+                            <div class="custom-select-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c08a42" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </div>
+                        </div>
+                        <div class="custom-select-backdrop" id="partySelectBackdrop"></div>
+                        <div class="custom-options-list">
+                            <div class="custom-select-mobile-header">
+                                <span>Select a Party</span>
+                                <button type="button" class="close-select-btn" data-target="partySelectWrapper">✕</button>
+                            </div>
+                            <div class="custom-options-scroll">
+                                <div class="custom-select-optgroup-label">🟠 Mahayuti Alliance (2024 — 235 MLAs)</div>
+                                <div class="custom-select-option" data-value="BJP">🟠 BJP — Bharatiya Janata Party (132 MLAs)</div>
+                                <div class="custom-select-option" data-value="SS(Shinde)">🟡 Shiv Sena – Shinde (57 MLAs)</div>
+                                <div class="custom-select-option" data-value="NCP(Ajit)">🟢 NCP – Ajit Pawar (41 MLAs)</div>
+                                
+                                <div class="custom-select-optgroup-label">🔵 MVA Alliance (2024 — 50 MLAs)</div>
+                                <div class="custom-select-option" data-value="INC">🔵 INC — Indian National Congress (16 MLAs)</div>
+                                <div class="custom-select-option" data-value="SS(UBT)">🔥 Shiv Sena – UBT / Uddhav (20 MLAs)</div>
+                                <div class="custom-select-option" data-value="NCP(Sharad)">🫐 NCP – Sharad Pawar (10 MLAs)</div>
+                                
+                                <div class="custom-select-optgroup-label">📜 Legacy / Historical</div>
+                                <div class="custom-select-option" data-value="SS">Shiv Sena (pre-2022 split)</div>
+                                <div class="custom-select-option" data-value="NCP">NCP (pre-2023 split)</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- MLA Strength -->
@@ -108,12 +122,27 @@ and historical data{% endblock %}
                     <label for="candidateType" class="form-label">
                         <span class="label-text">Candidate Type</span>
                     </label>
-                    <select id="candidateType" name="candidate_type" class="form-select" required>
-                        <option value="">Select candidate type</option>
-                        <option value="new">🆕 New / First-time candidate</option>
-                        <option value="experienced">🔄 Experienced / Incumbent (seeking re-election)</option>
-                        <option value="mixed">🔀 Mixed (combination of new and experienced)</option>
-                    </select>
+                    <div class="custom-select-wrapper" id="candidateTypeWrapper">
+                        <input type="hidden" id="candidateType" name="candidate_type" required>
+                        <div class="custom-select-trigger" tabindex="0">
+                            <span class="custom-select-text placeholder-text">Select candidate type</span>
+                            <div class="custom-select-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c08a42" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            </div>
+                        </div>
+                        <div class="custom-select-backdrop" id="candidateSelectBackdrop"></div>
+                        <div class="custom-options-list">
+                            <div class="custom-select-mobile-header">
+                                <span>Candidate Type</span>
+                                <button type="button" class="close-select-btn" data-target="candidateTypeWrapper">✕</button>
+                            </div>
+                            <div class="custom-options-scroll">
+                                <div class="custom-select-option" data-value="new">🆕 New / First-time candidate</div>
+                                <div class="custom-select-option" data-value="experienced">🔄 Experienced / Incumbent (seeking re-election)</div>
+                                <div class="custom-select-option" data-value="mixed">🔀 Mixed (combination of new and experienced)</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Error Message -->
