@@ -1,6 +1,6 @@
 # 🗳️ Maharashtra Election Outcome Predictor
 
-A machine learning project that predicts the probability of a political party winning a Maharashtra election. Built with Python, Flask, scikit-learn, and a clean web interface.
+A machine learning project that predicts the probability of a political party winning a Maharashtra election. Built with Python, FastAPI, scikit-learn, and a clean Progressive Web App (PWA) interface with a modern glassmorphism design.
 
 ---
 
@@ -12,20 +12,31 @@ The model incorporates real-world political dynamics, including recency weightin
 
 ---
 
+## ✨ Features
+
+- **AI-Powered Forecasting**: Uses a calibrated Random Forest Classifier to predict win probabilities.
+- **Progressive Web App (PWA)**: Installable on mobile devices with a Network-First caching strategy for seamless offline-ready usage.
+- **FastAPI Backend**: High-performance REST API for data serving and predictions.
+- **Modern UI/UX**: Features a warm, light glassmorphism aesthetic, animated form interactions, and a mobile-friendly bottom-sheet dropdown UI.
+
+---
+
 ## 📁 Project Structure
 
 ```text
 Election-Outcome-Prediction-Model/
-├── app.py                  # The main Flask web app & prediction API
+├── app.py                  # The main FastAPI web app & prediction API
 ├── requirements.txt        # Python package dependencies
 ├── data/
 │   └── clean_election.csv  # Cleaned 1952-2024 historical election data
+├── static/                 # CSS, JS, images, and PWA manifest/service worker
 ├── templates/              # HTML files for the web interface
 │   ├── index.html          # Main prediction page
 │   ├── parties.html        # Parties list
 │   ├── party_detail.html   # Detailed party info
-│   └── about.html          # About page
-└── static/                 # (Optional) CSS and JS files
+│   ├── about.html          # About page
+│   └── base.html           # Base layout template
+└── APK_GENERATION_GUIDE.md # Documentation for converting the PWA to an Android APK
 ```
 
 ---
@@ -42,6 +53,13 @@ pip install -r requirements.txt
 python app.py
 ```
 Wait for the model to train automatically, then open your browser and go to 👉 `http://localhost:5000`
+
+---
+
+## 📱 Mobile App (APK Generation)
+
+Since the app is a fully compliant PWA, it can be easily converted into a native Android `.apk` or `.aab` for deployment.
+Please see the [APK_GENERATION_GUIDE.md](APK_GENERATION_GUIDE.md) for step-by-step instructions on generating an Android app using Bubblewrap.
 
 ---
 
@@ -81,10 +99,10 @@ The app exposes several JSON APIs you can interact with programmatically:
 | Tool | Usage |
 |------|-------------------|
 | Python 3 | Core logic |
-| Flask | Web server & REST API |
+| FastAPI & Uvicorn | Web server & REST API |
 | scikit-learn | Random Forest ML Model |
 | pandas & numpy | Data manipulation |
-| HTML / JS | Frontend interface |
+| HTML / CSS / Vanilla JS | Frontend interface (Glassmorphism & PWA) |
 
 ---
 
