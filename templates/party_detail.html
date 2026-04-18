@@ -42,41 +42,41 @@ statistics{% endblock %}
             </div>
 
             <!-- Historical Performance -->
-            <h3 style="font-size: 1.5rem; margin-bottom: 20px; color: white;">📈 Historical Performance</h3>
+            <h3 style="font-size: 1.5rem; margin-bottom: 20px; color: #2c2015;">📈 Historical Performance</h3>
             <div style="overflow-x: auto;">
                 <table style="width: 100%; border-collapse: collapse;">
                     <thead>
-                        <tr style="background: rgba(52, 152, 219, 0.2);">
+                        <tr style="background: rgba(200, 185, 155, 0.2);">
                             <th
-                                style="padding: 12px; text-align: left; border-bottom: 2px solid #3498db; color: white;">
+                                style="padding: 12px; text-align: left; border-bottom: 2px solid rgba(200, 185, 155, 0.5); color: #c08a42;">
                                 Year</th>
                             <th
-                                style="padding: 12px; text-align: center; border-bottom: 2px solid #3498db; color: white;">
+                                style="padding: 12px; text-align: center; border-bottom: 2px solid rgba(200, 185, 155, 0.5); color: #c08a42;">
                                 MLA
                                 Strength</th>
                             <th
-                                style="padding: 12px; text-align: center; border-bottom: 2px solid #3498db; color: white;">
+                                style="padding: 12px; text-align: center; border-bottom: 2px solid rgba(200, 185, 155, 0.5); color: #c08a42;">
                                 Alliance
                                 Strength</th>
                             <th
-                                style="padding: 12px; text-align: center; border-bottom: 2px solid #3498db; color: white;">
+                                style="padding: 12px; text-align: center; border-bottom: 2px solid rgba(200, 185, 155, 0.5); color: #c08a42;">
                                 RS Wins
                             </th>
                             <th
-                                style="padding: 12px; text-align: center; border-bottom: 2px solid #3498db; color: white;">
+                                style="padding: 12px; text-align: center; border-bottom: 2px solid rgba(200, 185, 155, 0.5); color: #c08a42;">
                                 Result</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for record in party.historical_data %}
-                        <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                            <td style="padding: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.95);">{{
+                        <tr style="border-bottom: 1px solid rgba(200, 185, 155, 0.3);">
+                            <td style="padding: 12px; font-weight: 600; color: rgba(44, 32, 21, 0.95);">{{
                                 record.year }}</td>
-                            <td style="padding: 12px; text-align: center; color: rgba(255, 255, 255, 0.85);">{{
+                            <td style="padding: 12px; text-align: center; color: rgba(44, 32, 21, 0.85);">{{
                                 record.mla_strength }}</td>
-                            <td style="padding: 12px; text-align: center; color: rgba(255, 255, 255, 0.85);">{{
+                            <td style="padding: 12px; text-align: center; color: rgba(44, 32, 21, 0.85);">{{
                                 record.alliance_mla_strength }}</td>
-                            <td style="padding: 12px; text-align: center; color: rgba(255, 255, 255, 0.85);">{{
+                            <td style="padding: 12px; text-align: center; color: rgba(44, 32, 21, 0.85);">{{
                                 record.past_rs_wins }}</td>
                             <td style="padding: 12px; text-align: center;">
                                 {% if record.winner == 1 %}
