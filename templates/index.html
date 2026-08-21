@@ -6,52 +6,39 @@
 {% block content %}
 <div class="container">
 
-    <!-- Hero Banner Card -->
+    <!-- Hero Banner -->
     <header class="hero-section">
-        <div class="hero-card glass-panel">
-            <div class="hero-content">
-                <div class="hero-logo-wrapper">
-                    <img src="{{ url_for('static', path='images/logo.png') }}" alt="Election Predictor Logo" class="hero-logo-img">
-                    <div class="hero-logo-glow"></div>
-                </div>
-                <div class="hero-text">
-                    <h1 class="hero-title">Election Outcome <span class="gradient-text">Predictor</span></h1>
-                    <p class="hero-subtitle">Maharashtra Assembly & Electoral Forecasting <span class="hero-highlight">1952–2024 Historical Data</span></p>
-                </div>
-            </div>
+        <div class="hero-badge">
+            <img src="{{ url_for('static', path='images/logo.png') }}" alt="Logo" class="hero-badge-img">
+            <span>AI Electoral Predictor</span>
+        </div>
+        <h1 class="hero-title">Election Outcome <span class="gradient-text">Predictor</span></h1>
+        <p class="hero-subtitle">Maharashtra Assembly &amp; Electoral Forecasting using 1952–2024 historical data</p>
 
-            <!-- Hero Feature Metrics -->
-            <div class="hero-metrics">
-                <div class="metric-chip">
-                    <div class="metric-info">
-                        <span class="metric-value">288 Seats</span>
-                        <span class="metric-label">Assembly Total</span>
-                    </div>
-                </div>
-                <div class="metric-divider"></div>
-                <div class="metric-chip">
-                    <div class="metric-info">
-                        <span class="metric-value">145 Mark</span>
-                        <span class="metric-label">Majority Threshold</span>
-                    </div>
-                </div>
-                <div class="metric-divider"></div>
-                <div class="metric-chip">
-                    <div class="metric-info">
-                        <span class="metric-value">72 Years</span>
-                        <span class="metric-label">Election Dataset</span>
-                    </div>
-                </div>
-                <div class="metric-divider"></div>
-                <div class="metric-chip">
-                    <div class="metric-info">
-                        <span class="metric-value">Random Forest</span>
-                        <span class="metric-label">Recency AI Model</span>
-                    </div>
-                </div>
+        <!-- Minimal stat strip -->
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <span class="hero-stat-value">288</span>
+                <span class="hero-stat-label">Seats</span>
+            </div>
+            <div class="hero-stat-sep"></div>
+            <div class="hero-stat">
+                <span class="hero-stat-value">145</span>
+                <span class="hero-stat-label">Majority Mark</span>
+            </div>
+            <div class="hero-stat-sep"></div>
+            <div class="hero-stat">
+                <span class="hero-stat-value">72</span>
+                <span class="hero-stat-label">Years of Data</span>
+            </div>
+            <div class="hero-stat-sep"></div>
+            <div class="hero-stat">
+                <span class="hero-stat-value">AI</span>
+                <span class="hero-stat-label">Random Forest</span>
             </div>
         </div>
     </header>
+
 
     <!-- Prediction Form Card  -->
     <section class="form-section" id="formSection">
