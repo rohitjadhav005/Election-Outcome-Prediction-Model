@@ -331,7 +331,6 @@ body::before {
     position: relative;
     z-index: 2;
     background: #ffffff;
-    animation: heroFloat 4s ease-in-out infinite;
 }
 
 .hero-logo-glow {
@@ -345,11 +344,6 @@ body::before {
     background: radial-gradient(circle, rgba(217, 119, 6, 0.35) 0%, transparent 70%);
     filter: blur(10px);
     z-index: 1;
-}
-
-@keyframes heroFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-7px); }
 }
 
 .hero-text {
