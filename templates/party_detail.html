@@ -8,7 +8,9 @@ statistics{% endblock %}
 <div class="container">
     <!-- Party Header -->
     <header class="header">
-        <div class="header-icon">{{ party.icon }}</div>
+        <div class="party-detail-logo-wrapper">
+            <img src="{{ party.logo_url if party.logo_url and party.logo_url.startswith('/') else party.icon if party.icon and party.icon.startswith('/') else '/static/images/parties/' ~ (party.party_name|lower|replace(' ', '_')|replace('(', '')|replace(')', '')) ~ '.png' }}" alt="{{ party.party_name }} Logo" class="party-detail-logo-img" onerror="this.onerror=null; this.src='/static/images/logo.png';">
+        </div>
         <h1 class="logo">{{ party.party_name }}</h1>
         <p class="tagline">{{ party.description }}</p>
     </header>
@@ -29,20 +31,19 @@ statistics{% endblock %}
                     <div class="stat-value">{{ party.current_alliance_strength }}</div>
                 </div>
                 <div class="party-stat">
-                    <div class="stat-label">Total RS Wins</div>
+                    <div class="stat-label">Total Seat Wins</div>
                     <div class="stat-value">{{ party.total_rs_wins }}</div>
                 </div>
                 <div class="party-stat">
                     <div class="stat-label">Weighted Win Rate</div>
-                    <div class="stat-value"
-                        style="color: {% if party.win_rate >= 70 %}#2ecc71{% elif party.win_rate <= 20 %}#e74c3c{% else %}#f39c12{% endif %}">
+                    <div class="stat-value" style="color: {{ '#15803d' if party.win_rate >= 70 else ('#dc2626' if party.win_rate <= 20 else '#d97706') }}; font-weight: 700;">
                         {{ "%.1f"|format(party.win_rate) }}%
                     </div>
                 </div>
             </div>
 
             <!-- Historical Performance -->
-            <h3 style="font-size: 1.5rem; margin-bottom: 20px; color: #2c2015;">📈 Historical Performance</h3>
+            <h3 style="font-size: 1.5rem; margin-bottom: 20px; color: #2c2015;">Historical Performance</h3>
             <div style="overflow-x: auto;">
                 <table style="width: 100%; border-collapse: collapse;">
                     <thead>
@@ -60,7 +61,7 @@ statistics{% endblock %}
                                 Strength</th>
                             <th
                                 style="padding: 12px; text-align: center; border-bottom: 2px solid rgba(200, 185, 155, 0.5); color: #c08a42;">
-                                RS Wins
+                                Seat Wins
                             </th>
                             <th
                                 style="padding: 12px; text-align: center; border-bottom: 2px solid rgba(200, 185, 155, 0.5); color: #c08a42;">
@@ -96,7 +97,6 @@ statistics{% endblock %}
                 <a href="/?party={{ party.party_name }}" class="submit-btn"
                     style="display: inline-flex; text-decoration: none;">
                     <span class="btn-text">Predict with {{ party.party_name }}</span>
-                    <span class="btn-icon">🔮</span>
                 </a>
             </div>
         </div>

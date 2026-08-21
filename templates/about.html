@@ -8,7 +8,6 @@ endblock %}
 <div class="container">
     <!-- Page Header -->
     <header class="header">
-        <div class="header-icon">ℹ️</div>
         <h1 class="logo">About This System</h1>
         <p class="tagline">How the election prediction model works</p>
     </header>
@@ -20,15 +19,15 @@ endblock %}
 
             <div style="line-height: 1.8; color: rgba(44, 32, 21, 0.85);">
 
-                <h3 style="color: #c08a42; margin-top: 25px; margin-bottom: 15px;">🤖 Machine Learning Model</h3>
+                <h3 style="color: #c08a42; margin-top: 25px; margin-bottom: 15px;">Machine Learning Model</h3>
                 <p>
-                    This system uses a <strong>Random Forest Classifier</strong> (200 decision trees) trained on 72
+                    This system uses a <strong>Random Forest Classifier</strong> (300 decision trees) trained on 72
                     years of
-                    real Maharashtra Rajya Sabha election data (1952–2024). Each tree votes on the outcome; the final
-                    win probability is the average across all trees.
+                    real Maharashtra electoral and assembly election data (1952–2024). Each tree votes on the outcome; the final
+                    win probability is calculated across all trees.
                 </p>
 
-                <h3 style="color: #c08a42; margin-top: 25px; margin-bottom: 15px;">⚡ Recency Weighting</h3>
+                <h3 style="color: #c08a42; margin-top: 25px; margin-bottom: 15px;">Recency Weighting</h3>
                 <p>
                     Not all elections are equal — politics changes over time! The model uses
                     <strong>exponential decay weighting</strong> so that recent elections matter more:
@@ -52,23 +51,21 @@ endblock %}
                     </div>
                 </div>
 
-                <h3 style="color: #c08a42; margin-top: 25px; margin-bottom: 15px;">📊 What the Model Looks At (9
-                    Features)</h3>
+                <h3 style="color: #c08a42; margin-top: 25px; margin-bottom: 15px;">What the Model Looks At (10 Features)</h3>
                 <ul style="margin-left: 20px; margin-top: 10px; color: rgba(44, 32, 21, 0.85);">
                     <li><strong>Party Identity:</strong> Encoded party name — model learns each party's historical
                         pattern</li>
                     <li><strong>MLA Strength:</strong> How many MLAs the party currently holds</li>
                     <li><strong>Alliance Strength:</strong> Combined MLA count including all coalition partners</li>
-                    <li><strong>Alliance Majority Flag:</strong> Whether the alliance holds ≥145 MLAs — the key RS
-                        election trigger</li>
+                    <li><strong>Alliance Majority Flag:</strong> Whether the alliance holds ≥145 MLAs — the key majority threshold</li>
                     <li><strong>MLA Share %:</strong> Party's share of all 288 Maharashtra seats (normalised)</li>
                     <li><strong>Alliance Share %:</strong> Alliance's share of all 288 seats (normalised)</li>
-                    <li><strong>Past Rajya Sabha Wins:</strong> Historical RS track record</li>
+                    <li><strong>Past Seat Wins:</strong> Historical seat victory track record</li>
                     <li><strong>Candidate Type:</strong> New, Experienced/Incumbent, or Mixed</li>
                     <li><strong>Year:</strong> Captures political era trends (with recency weighting)</li>
                 </ul>
 
-                <h3 style="color: #c08a42; margin-top: 25px; margin-bottom: 15px;">🎯 Model Stats</h3>
+                <h3 style="color: #c08a42; margin-top: 25px; margin-bottom: 15px;">Model Stats</h3>
                 <div class="party-stats" style="margin-top: 15px;">
                     <div class="party-stat">
                         <div class="stat-label">Algorithm</div>
@@ -76,7 +73,7 @@ endblock %}
                     </div>
                     <div class="party-stat">
                         <div class="stat-label">Decision Trees</div>
-                        <div class="stat-value" style="font-size: 1.1rem;">200</div>
+                        <div class="stat-value" style="font-size: 1.1rem;">300</div>
                     </div>
                     <div class="party-stat">
                         <div class="stat-label">Total Records</div>
@@ -84,15 +81,15 @@ endblock %}
                     </div>
                     <div class="party-stat">
                         <div class="stat-label">Features Used</div>
-                        <div class="stat-value" style="font-size: 1.1rem;">9</div>
+                        <div class="stat-value" style="font-size: 1.1rem;">10</div>
                     </div>
                     <div class="party-stat">
                         <div class="stat-label">Predicts</div>
-                        <div class="stat-value" style="font-size: 1rem;">2027 RS</div>
+                        <div class="stat-value" style="font-size: 1rem;">2027 Outcome</div>
                     </div>
                 </div>
 
-                <h3 style="color: #c08a42; margin-top: 25px; margin-bottom: 15px;">⚠️ Disclaimer</h3>
+                <h3 style="color: #c08a42; margin-top: 25px; margin-bottom: 15px;">Disclaimer</h3>
                 <p
                     style="background: rgba(255, 193, 7, 0.15); padding: 15px; border-radius: 10px; border-left: 4px solid #ffc107; color: rgba(44, 32, 21, 0.95);">
                     Predictions are based on historical patterns only. Real elections can be affected by
@@ -103,7 +100,6 @@ endblock %}
                 <div style="margin-top: 30px; text-align: center;">
                     <a href="/" class="submit-btn" style="display: inline-flex; text-decoration: none;">
                         <span class="btn-text">Try Prediction Now</span>
-                        <span class="btn-icon">🔮</span>
                     </a>
                 </div>
             </div>

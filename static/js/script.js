@@ -153,12 +153,12 @@ function displayResult(result, payload) {
     resultConfidence.textContent = winProb;
 
     if (isWin) {
-        resultPrediction.textContent = '🏆 Likely to WIN';
-        resultIcon.textContent = '🏆';
+        resultPrediction.textContent = 'Likely to WIN';
+        resultIcon.textContent = '';
         resultCard.classList.replace('lose', 'win') || resultCard.classList.add('win');
     } else {
-        resultPrediction.textContent = '📉 Likely to LOSE';
-        resultIcon.textContent = '📊';
+        resultPrediction.textContent = 'Likely to LOSE';
+        resultIcon.textContent = '';
         resultCard.classList.replace('win', 'lose') || resultCard.classList.add('lose');
     }
 
@@ -195,7 +195,7 @@ function displayHighlights(result, inputs) {
 
     // 1. Majority Signal
     if (alliance >= 145) {
-        addHighlight('Majority Alliance ✓', 'positive');
+        addHighlight('Majority Alliance', 'positive');
     } else if (alliance >= 130) {
         addHighlight('Near Majority Threshold', 'neutral');
     } else {
@@ -243,10 +243,10 @@ function updateMajorityIndicator() {
     bar.style.width = pct + '%';
 
     if (allianceVal >= 145) {
-        status.textContent = 'Majority Reached! 🌟';
+        status.textContent = 'Majority Reached!';
         status.className = 'majority-status-text status-majority';
     } else if (allianceVal >= 130) {
-        status.textContent = 'Critical Threshold ⚠️';
+        status.textContent = 'Critical Threshold';
         status.className = 'majority-status-text status-near';
     } else {
         status.textContent = 'Below Majority Mark';

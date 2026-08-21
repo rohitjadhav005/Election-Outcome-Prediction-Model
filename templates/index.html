@@ -1,158 +1,191 @@
 {% extends "base.html" %}
 
-{% block title %}Home - Election Outcome Predictor{% endblock %}
-{% block meta_description %}Predict Maharashtra Rajya Sabha election outcomes using AI-powered analysis of MLA strength
-and historical data{% endblock %}
+{% block title %}Election Outcome Predictor | AI Electoral Forecasting{% endblock %}
+{% block meta_description %}Predict Maharashtra Assembly & Electoral outcomes using AI-powered analysis of MLA strength and 1952-2024 historical election data{% endblock %}
 
 {% block content %}
 <div class="container">
 
-    <!-- Page Header -->
-    <header class="header">
-        <div class="header-main">
-            <img src="{{ url_for('static', path='images/logo.png') }}" alt="Logo" class="header-logo-img">
-            <h1 class="logo">Election Outcome<br>Predictor</h1>
+    <!-- Hero Banner Card -->
+    <header class="hero-section">
+        <div class="hero-card glass-panel">
+            <div class="hero-badge">
+                <span class="badge-pulse"></span>
+                <span class="badge-text">AI-POWERED ELECTORAL FORECASTING</span>
+            </div>
+
+            <div class="hero-content">
+                <div class="hero-logo-wrapper">
+                    <img src="{{ url_for('static', path='images/logo.png') }}" alt="Election Predictor Logo" class="hero-logo-img">
+                    <div class="hero-logo-glow"></div>
+                </div>
+                <div class="hero-text">
+                    <h1 class="hero-title">Election Outcome <span class="gradient-text">Predictor</span></h1>
+                    <p class="hero-subtitle">Maharashtra Assembly & Electoral Forecasting <span class="hero-highlight">1952–2024 Historical Data</span></p>
+                </div>
+            </div>
+
+            <!-- Hero Feature Metrics -->
+            <div class="hero-metrics">
+                <div class="metric-chip">
+                    <div class="metric-info">
+                        <span class="metric-value">288 Seats</span>
+                        <span class="metric-label">Assembly Total</span>
+                    </div>
+                </div>
+                <div class="metric-divider"></div>
+                <div class="metric-chip">
+                    <div class="metric-info">
+                        <span class="metric-value">145 Mark</span>
+                        <span class="metric-label">Majority Threshold</span>
+                    </div>
+                </div>
+                <div class="metric-divider"></div>
+                <div class="metric-chip">
+                    <div class="metric-info">
+                        <span class="metric-value">72 Years</span>
+                        <span class="metric-label">Election Dataset</span>
+                    </div>
+                </div>
+                <div class="metric-divider"></div>
+                <div class="metric-chip">
+                    <div class="metric-info">
+                        <span class="metric-value">Random Forest</span>
+                        <span class="metric-label">Recency AI Model</span>
+                    </div>
+                </div>
+            </div>
         </div>
-        <p class="tagline">Maharashtra Rajya Sabha — AI-Powered Forecasting (1952–2024 Data)</p>
     </header>
 
     <!-- Prediction Form Card  -->
     <section class="form-section" id="formSection">
         <div class="form-card glass-panel">
-            <h2 class="form-title">Predict Election Outcome</h2>
-            <p class="form-description">Enter current party data to predict the 2027 Rajya Sabha outcome</p>
-
-            <!-- Start Prediction Toggle -->
-            <div id="startPredictionContainer"
-                style="display: flex; justify-content: center; width: 100%; margin: 30px 0;">
-                <button type="button" class="submit-btn" id="startPredictionBtn">
-                    <span class="btn-text">Start Prediction</span>
-                    <span class="btn-icon">🚀</span>
-                </button>
-            </div>
+            <h2 class="form-title">Predict Electoral Outcome</h2>
+            <p class="form-description">Enter party & alliance strength to calculate 2027 win probability</p>
 
             <!-- Prediction Form -->
-            <form id="predictionForm" class="prediction-form hidden">
+            <form id="predictionForm" class="prediction-form">
+                <div class="form-grid">
 
-                <!-- Party Name -->
-                <div class="form-group">
-                    <label for="partyName" class="form-label">
-                        <span class="label-text">Party Name</span>
-                    </label>
-                    <div class="custom-select-wrapper" id="partySelectWrapper">
-                        <input type="hidden" id="partyName" name="party_name" required>
-                        <div class="custom-select-trigger" tabindex="0">
-                            <span class="custom-select-text placeholder-text">Select a party</span>
-                            <div class="custom-select-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c08a42" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    <!-- Party Name -->
+                    <div class="form-group">
+                        <label for="partyName" class="form-label">
+                            <span class="label-text">Party Name</span>
+                        </label>
+                        <div class="custom-select-wrapper" id="partySelectWrapper">
+                            <input type="hidden" id="partyName" name="party_name" required>
+                            <div class="custom-select-trigger" tabindex="0">
+                                <span class="custom-select-text placeholder-text">Select a party</span>
+                                <div class="custom-select-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c08a42" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </div>
                             </div>
-                        </div>
-                        <div class="custom-select-backdrop" id="partySelectBackdrop"></div>
-                        <div class="custom-options-list">
-                            <div class="custom-select-mobile-header">
-                                <span>Select a Party</span>
-                                <button type="button" class="close-select-btn" data-target="partySelectWrapper">✕</button>
-                            </div>
-                            <div class="custom-options-scroll">
-                                <div class="custom-select-optgroup-label">🟠 Mahayuti Alliance (2024 — 235 MLAs)</div>
-                                <div class="custom-select-option" data-value="BJP">🟠 BJP — Bharatiya Janata Party (132 MLAs)</div>
-                                <div class="custom-select-option" data-value="SS(Shinde)">🟡 Shiv Sena – Shinde (57 MLAs)</div>
-                                <div class="custom-select-option" data-value="NCP(Ajit)">🟢 NCP – Ajit Pawar (41 MLAs)</div>
-                                
-                                <div class="custom-select-optgroup-label">🔵 MVA Alliance (2024 — 50 MLAs)</div>
-                                <div class="custom-select-option" data-value="INC">🔵 INC — Indian National Congress (16 MLAs)</div>
-                                <div class="custom-select-option" data-value="SS(UBT)">🔥 Shiv Sena – UBT / Uddhav (20 MLAs)</div>
-                                <div class="custom-select-option" data-value="NCP(Sharad)">🫐 NCP – Sharad Pawar (10 MLAs)</div>
-                                
-                                <div class="custom-select-optgroup-label">📜 Legacy / Historical</div>
-                                <div class="custom-select-option" data-value="SS">Shiv Sena (pre-2022 split)</div>
-                                <div class="custom-select-option" data-value="NCP">NCP (pre-2023 split)</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MLA Strength -->
-                <div class="form-group">
-                    <label for="mlaStrength" class="form-label">
-                        <span class="label-text">MLA Strength</span>
-                    </label>
-                    <input type="number" id="mlaStrength" name="mla_strength" class="form-input" placeholder="e.g. 132"
-                        min="0" max="288" required>
-                    <small class="field-hint">Total number of MLAs the party holds in Maharashtra Assembly (max
-                        288)</small>
-                </div>
-
-                <!-- Alliance MLA Strength -->
-                <div class="form-group">
-                    <label for="allianceMlaStrength" class="form-label">
-                        <span class="label-text">Alliance MLA Strength</span>
-                    </label>
-                    <input type="number" id="allianceMlaStrength" name="alliance_mla_strength" class="form-input"
-                        placeholder="e.g. 230" min="0" max="288" required>
-                    
-                    <!-- Soft Majority Indicator -->
-                    <div class="majority-container">
-                        <div class="majority-label-row">
-                            <span>Majority Signal</span>
-                            <span class="majority-status-text status-weak" id="majorityStatus">Below Threshold</span>
-                        </div>
-                        <div class="majority-bar-bg">
-                            <div class="majority-bar-fill" id="majorityBarFill"></div>
-                            <div class="majority-threshold-line"></div>
-                        </div>
-                    </div>
-
-                    <small class="field-hint">Total MLAs including all alliance partners — same as MLA Strength if no
-                        alliance</small>
-                </div>
-
-                <!-- Past RS Wins -->
-                <div class="form-group">
-                    <label for="pastRsWins" class="form-label">
-                        <span class="label-text">Past Rajya Sabha Wins</span>
-                    </label>
-                    <input type="number" id="pastRsWins" name="past_rs_wins" class="form-input" placeholder="e.g. 15"
-                        min="0" required>
-                    <small class="field-hint">Number of Rajya Sabha seats the party has won historically</small>
-                </div>
-
-                <!-- Candidate Type -->
-                <div class="form-group">
-                    <label for="candidateType" class="form-label">
-                        <span class="label-text">Candidate Type</span>
-                    </label>
-                    <div class="custom-select-wrapper" id="candidateTypeWrapper">
-                        <input type="hidden" id="candidateType" name="candidate_type" required>
-                        <div class="custom-select-trigger" tabindex="0">
-                            <span class="custom-select-text placeholder-text">Select candidate type</span>
-                            <div class="custom-select-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c08a42" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                            </div>
-                        </div>
-                        <div class="custom-select-backdrop" id="candidateSelectBackdrop"></div>
-                        <div class="custom-options-list">
-                            <div class="custom-select-mobile-header">
-                                <span>Candidate Type</span>
-                                <button type="button" class="close-select-btn" data-target="candidateTypeWrapper">✕</button>
-                            </div>
-                            <div class="custom-options-scroll">
-                                <div class="custom-select-option" data-value="new">🆕 New / First-time candidate</div>
-                                <div class="custom-select-option" data-value="experienced">🔄 Experienced / Incumbent (seeking re-election)</div>
-                                <div class="custom-select-option" data-value="mixed">🔀 Mixed (combination of new and experienced)</div>
+                            <div class="custom-select-backdrop" id="partySelectBackdrop"></div>
+                            <div class="custom-options-list">
+                                <div class="custom-select-mobile-header">
+                                    <span>Select a Party</span>
+                                    <button type="button" class="close-select-btn" data-target="partySelectWrapper">✕</button>
+                                </div>
+                                <div class="custom-options-scroll">
+                                    <div class="custom-select-optgroup-label">Mahayuti Alliance (2024 — 235 MLAs)</div>
+                                    <div class="custom-select-option" data-value="BJP">BJP — Bharatiya Janata Party (132 MLAs)</div>
+                                    <div class="custom-select-option" data-value="SS(Shinde)">Shiv Sena – Shinde (57 MLAs)</div>
+                                    <div class="custom-select-option" data-value="NCP(Ajit)">NCP – Ajit Pawar (41 MLAs)</div>
+                                    
+                                    <div class="custom-select-optgroup-label">MVA Alliance (2024 — 50 MLAs)</div>
+                                    <div class="custom-select-option" data-value="INC">INC — Indian National Congress (16 MLAs)</div>
+                                    <div class="custom-select-option" data-value="SS(UBT)">Shiv Sena – UBT / Uddhav (20 MLAs)</div>
+                                    <div class="custom-select-option" data-value="NCP(Sharad)">NCP – Sharad Pawar (10 MLAs)</div>
+                                    
+                                    <div class="custom-select-optgroup-label">Legacy / Historical</div>
+                                    <div class="custom-select-option" data-value="SS">Shiv Sena (pre-2022 split)</div>
+                                    <div class="custom-select-option" data-value="NCP">NCP (pre-2023 split)</div>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Candidate Type -->
+                    <div class="form-group">
+                        <label for="candidateType" class="form-label">
+                            <span class="label-text">Candidate Type</span>
+                        </label>
+                        <div class="custom-select-wrapper" id="candidateTypeWrapper">
+                            <input type="hidden" id="candidateType" name="candidate_type" required>
+                            <div class="custom-select-trigger" tabindex="0">
+                                <span class="custom-select-text placeholder-text">Select candidate type</span>
+                                <div class="custom-select-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c08a42" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </div>
+                            </div>
+                            <div class="custom-select-backdrop" id="candidateSelectBackdrop"></div>
+                            <div class="custom-options-list">
+                                <div class="custom-select-mobile-header">
+                                    <span>Candidate Type</span>
+                                    <button type="button" class="close-select-btn" data-target="candidateTypeWrapper">✕</button>
+                                </div>
+                                <div class="custom-options-scroll">
+                                    <div class="custom-select-option" data-value="new">New / First-time candidate</div>
+                                    <div class="custom-select-option" data-value="experienced">Experienced / Incumbent</div>
+                                    <div class="custom-select-option" data-value="mixed">Mixed (New & Experienced)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MLA Strength -->
+                    <div class="form-group">
+                        <label for="mlaStrength" class="form-label">
+                            <span class="label-text">Party MLA Count</span>
+                        </label>
+                        <input type="number" id="mlaStrength" name="mla_strength" class="form-input" placeholder="e.g. 132"
+                            min="0" max="288" required>
+                        <small class="field-hint">MLAs held in Maharashtra Assembly (max 288)</small>
+                    </div>
+
+                    <!-- Alliance MLA Strength -->
+                    <div class="form-group">
+                        <label for="allianceMlaStrength" class="form-label">
+                            <span class="label-text">Alliance Total Count</span>
+                        </label>
+                        <input type="number" id="allianceMlaStrength" name="alliance_mla_strength" class="form-input"
+                            placeholder="e.g. 235" min="0" max="288" required>
+                        
+                        <!-- Soft Majority Indicator -->
+                        <div class="majority-container">
+                            <div class="majority-label-row">
+                                <span>Majority Signal</span>
+                                <span class="majority-status-text status-weak" id="majorityStatus">Below Threshold</span>
+                            </div>
+                            <div class="majority-bar-bg">
+                                <div class="majority-bar-fill" id="majorityBarFill"></div>
+                                <div class="majority-threshold-line"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Past Seat Wins -->
+                    <div class="form-group full-width">
+                        <label for="pastRsWins" class="form-label">
+                            <span class="label-text">Historical Seat Wins</span>
+                        </label>
+                        <input type="number" id="pastRsWins" name="past_rs_wins" class="form-input" placeholder="e.g. 15"
+                            min="0" required>
+                        <small class="field-hint">Historical seats won by party in prior elections</small>
+                    </div>
+
                 </div>
 
                 <!-- Error Message -->
                 <div id="errorMessage" class="error-message hidden"></div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="submit-btn" id="submitBtn">
-                    <span class="btn-text">Predict Outcome</span>
-                    <span class="btn-icon">🔮</span>
-                </button>
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span class="btn-text">Predict Outcome</span>
+                    </button>
+                </div>
             </form>
         </div>
     </section>
@@ -166,7 +199,7 @@ and historical data{% endblock %}
             </div>
 
             <div class="result-content">
-                <div class="result-icon" id="resultIcon">🏆</div>
+                <div class="result-icon" id="resultIcon"></div>
                 <div class="result-prediction" id="resultPrediction">Win</div>
 
                 <div class="result-details">
@@ -177,7 +210,7 @@ and historical data{% endblock %}
                         <strong>Win Probability:</strong> <span id="resultConfidence">-</span>%
                     </p>
                     <p style="font-size:0.9rem; color: rgba(44, 32, 21, 0.65); margin-top:8px;">
-                        Predicted for the 2027 Maharashtra Rajya Sabha election
+                        Predicted for the 2027 Maharashtra Electoral & Assembly Seats
                     </p>
                 </div>
 
@@ -199,7 +232,7 @@ and historical data{% endblock %}
 
                 <!-- Party Information Box -->
                 <div id="partyInfoBox" class="party-info-box hidden">
-                    <div class="party-info-title">📊 Party Background</div>
+                    <div class="party-info-title">Party Background</div>
                     <div class="party-stats" id="partyStats"></div>
                     <a href="#" id="viewPartyLink" class="view-party-btn">View Full Party Profile →</a>
                 </div>
@@ -211,24 +244,27 @@ and historical data{% endblock %}
         </div>
     </section>
 
-    <!-- Dashboard Stats (Bottom Footer Widgets) -->
-    <div class="dashboard-stats">
-        <div class="stat-widget glass-panel">
-            <div class="stat-icon" style="color: #8b5cf6;">👥</div>
-            <div class="stat-label">Total Seats</div>
-            <div class="stat-val">288</div>
-        </div>
-        <div class="stat-widget glass-panel">
-            <div class="stat-icon">
-                <span style="color: #8b5cf6;">👤</span>
-                <span style="color: #facc15; font-size: 1.3rem;">⭐</span>
+    <!-- Sleek Minimal Quick Insights Bar -->
+    <div class="quick-insights-bar glass-panel">
+        <div class="insight-item">
+            <div class="insight-text">
+                <span class="insight-number">288 Seats</span>
+                <span class="insight-label">Maharashtra Assembly Total</span>
             </div>
-            <div class="stat-label">Majority Mark</div>
-            <div class="stat-val">145</div>
         </div>
-        <div class="stat-widget glass-panel">
-            <div class="stat-label">Seat Trend (1952-2024)</div>
-            <div class="mini-chart"></div>
+        <div class="insight-divider"></div>
+        <div class="insight-item">
+            <div class="insight-text">
+                <span class="insight-number">145 Seats</span>
+                <span class="insight-label">Majority Control Mark</span>
+            </div>
+        </div>
+        <div class="insight-divider"></div>
+        <div class="insight-item">
+            <div class="insight-text">
+                <span class="insight-number">1952–2024</span>
+                <span class="insight-label">Verified Historical Data</span>
+            </div>
         </div>
     </div>
 

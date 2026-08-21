@@ -69,6 +69,7 @@ class HistoricalEntry(BaseModel):
 class PartyInfo(BaseModel):
     party_name:               str
     icon:                     str
+    logo_url:                 Optional[str] = None
     description:              str
     current_mla_strength:     int
     current_alliance_strength:int
@@ -120,18 +121,19 @@ data             = None
 le_party         = None   # LabelEncoder for party names
 median_party_enc = None   # Median party encoding fallback for unknown parties
 
-# Party icons mapping (includes split factions)
-PARTY_ICONS = {
-    'BJP':          '🟠',
-    'INC':          '🔵',
-    'NCP':          '🟢',
-    'NCP(Ajit)':   '🟢',
-    'NCP(Sharad)': '🫐',
-    'SS':           '🟡',
-    'SS(Shinde)':  '🟡',
-    'SS(UBT)':     '🔥',
-    'Shiv Sena':   '🟡',
-    'Independent': '⚪'
+# Official Party Logos mapping (Maharashtra Electoral Symbols)
+PARTY_LOGOS = {
+    'BJP':          '/static/images/parties/bjp.png',
+    'INC':          '/static/images/parties/inc.png',
+    'NCP':          '/static/images/parties/ncp.png',
+    'NCP(Ajit)':   '/static/images/parties/ncp_ajit.png',
+    'NCP(Sharad)': '/static/images/parties/ncp_sharad.png',
+    'SS':           '/static/images/parties/ss.png',
+    'SS(Shinde)':  '/static/images/parties/ss_shinde.png',
+    'SS(UBT)':     '/static/images/parties/ss_ubt.png',
+    'Shiv Sena':   '/static/images/parties/ss.png',
+    'PWP':          '/static/images/parties/pwp.png',
+    'Janata Party': '/static/images/parties/janata.png'
 }
 
 # Party descriptions (includes split factions)
@@ -267,7 +269,8 @@ def get_party_info(party_name):
     
     return {
         'party_name': party_name,
-        'icon': PARTY_ICONS.get(party_name, '🏛️'),
+        'logo_url': PARTY_LOGOS.get(party_name, '/static/images/logo.png'),
+        'icon': PARTY_LOGOS.get(party_name, '/static/images/logo.png'),
         'description': PARTY_DESCRIPTIONS.get(party_name, f'{party_name} - Political Party'),
         'current_mla_strength': int(latest['mla_strength']),
         'current_alliance_strength': int(latest['alliance_mla_strength']),
@@ -426,7 +429,7 @@ async def get_stats():
 
 if __name__ == '__main__':
     print("=" * 60)
-    print("ELECTION OUTCOME PREDICTION SYSTEM")
+    print("MAHARASHTRA ELECTORAL OUTCOME PREDICTION SYSTEM")
     print("=" * 60)
     print("\nLoading data and training model...")
     print("Dataset: 1952-2024 Historical Election Data")
@@ -434,7 +437,7 @@ if __name__ == '__main__':
     print("  - Year")
     print("  - MLA Strength")
     print("  - Alliance MLA Strength")
-    print("  - Past Rajya Sabha Wins")
+    print("  - Past Seat Wins")
     print("  - Candidate Type (new/incumbent/mixed)")
     print()
     print()

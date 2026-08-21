@@ -39,6 +39,28 @@ function displayParties(parties) {
     });
 }
 
+const PARTY_LOGO_MAP = {
+    'BJP': '/static/images/parties/bjp.png',
+    'INC': '/static/images/parties/inc.png',
+    'NCP': '/static/images/parties/ncp.png',
+    'NCP(Ajit)': '/static/images/parties/ncp_ajit.png',
+    'NCP(Sharad)': '/static/images/parties/ncp_sharad.png',
+    'SS': '/static/images/parties/ss.png',
+    'SS(Shinde)': '/static/images/parties/ss_shinde.png',
+    'SS(UBT)': '/static/images/parties/ss_ubt.png',
+    'Shiv Sena': '/static/images/parties/ss.png',
+    'PWP': '/static/images/parties/pwp.png',
+    'Janata Party': '/static/images/parties/janata.png'
+};
+
+function getPartyLogoUrl(party) {
+    if (party.logo_url && party.logo_url.startsWith('/')) return party.logo_url;
+    if (party.icon && party.icon.startsWith('/')) return party.icon;
+    if (PARTY_LOGO_MAP[party.party_name]) return PARTY_LOGO_MAP[party.party_name];
+    const slug = (party.party_name || '').toLowerCase().replace(/[^a-z0-9]/g, '_');
+    return `/static/images/parties/${slug}.png`;
+}
+
 /**
  * Create a party card element
  * @param {Object} party - Party object
@@ -51,9 +73,13 @@ function createPartyCard(party) {
         window.location.href = `/party/${encodeURIComponent(party.party_name)}`;
     };
 
+    const logoSrc = getPartyLogoUrl(party);
+
     card.innerHTML = `
         <div class="party-card-header">
-            <div class="party-icon">${party.icon || '🏛️'}</div>
+            <div class="party-logo-box">
+                <img src="${logoSrc}" alt="${party.party_name} Logo" class="party-logo-img" onerror="this.onerror=null; this.src='/static/images/logo.png';">
+            </div>
             <div class="party-name">${party.party_name}</div>
         </div>
         <div class="party-card-body">
@@ -66,12 +92,12 @@ function createPartyCard(party) {
                 <span class="party-detail-value">${party.current_alliance_strength}</span>
             </div>
             <div class="party-detail-item">
-                <span class="party-detail-label">RS Wins:</span>
+                <span class="party-detail-label">Seat Wins:</span>
                 <span class="party-detail-value">${party.total_rs_wins}</span>
             </div>
             <div class="party-detail-item">
                 <span class="party-detail-label">Weighted Win Rate:</span>
-                <span class="party-detail-value" style="color: ${party.win_rate >= 70 ? '#2ecc71' : party.win_rate <= 20 ? '#e74c3c' : '#f39c12'}">
+                <span class="party-detail-value" style="color: ${party.win_rate >= 70 ? '#15803d' : party.win_rate <= 20 ? '#dc2626' : '#d97706'}">
                     ${party.win_rate.toFixed(1)}%
                 </span>
             </div>
@@ -95,7 +121,6 @@ function showError(message) {
     partiesGrid.innerHTML = `
         <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
             <div class="glass-panel" style="padding: 30px; text-align: center;">
-                <div style="font-size: 3rem; margin-bottom: 15px;">⚠️</div>
                 <div style="color: #ef4444; font-size: 1.2rem; font-weight: 600;">${message}</div>
             </div>
         </div>
