@@ -303,50 +303,7 @@ body::before {
     z-index: 0;
 }
 
-.hero-badge {
-    position: relative;
-    z-index: 1;
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(217, 119, 6, 0.4);
-    padding: 7px 18px;
-    border-radius: 30px;
-    font-size: 0.78rem;
-    font-weight: 800;
-    color: #b45309;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 22px;
-    box-shadow: 0 4px 15px rgba(217, 119, 6, 0.15);
-}
 
-.badge-pulse {
-    width: 8px;
-    height: 8px;
-    background-color: #16a34a;
-    border-radius: 50%;
-    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
-    animation: pulseDot 1.8s infinite;
-}
-
-@keyframes pulseDot {
-    0% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
-    }
-    70% {
-        transform: scale(1);
-        box-shadow: 0 0 0 8px rgba(22, 163, 74, 0);
-    }
-    100% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(22, 163, 74, 0);
-    }
-}
 
 .hero-content {
     position: relative;
@@ -994,15 +951,17 @@ body::before {
 }
 
 /* ===================================
-   BUTTONS
+   BUTTONS (React Glossy Sheen Animation)
    =================================== */
 
 .submit-btn {
-    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #e07a1b 0%, #b85a00 100%);
     color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    padding: 16px 36px;
-    border-radius: 30px;
+    border: none;
+    padding: 16px 44px;
+    border-radius: 50px;
     font-size: 1.1rem;
     font-weight: 700;
     cursor: pointer;
@@ -1010,34 +969,52 @@ body::before {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    transition: all 0.3s ease;
-    box-shadow: 0 6px 22px rgba(217, 119, 6, 0.35);
-    position: relative;
-    overflow: hidden;
+    letter-spacing: -0.01em;
+    box-shadow: 
+        0 8px 25px rgba(224, 122, 27, 0.4),
+        inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1;
 }
 
-.submit-btn::before {
+/* React Glossy Glass Sheen Swipe Beam */
+.submit-btn::after {
     content: '';
     position: absolute;
-    top: -2px; left: -2px; right: -2px; bottom: -2px;
-    border-radius: 32px;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    z-index: -1;
-    animation: borderGlow 3s linear infinite;
+    top: -50%;
+    left: -80%;
+    width: 60%;
+    height: 200%;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.45) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: skewX(-25deg);
+    animation: reactButtonShine 3s infinite cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    z-index: 2;
 }
 
-@keyframes borderGlow {
-    0%   { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+@keyframes reactButtonShine {
+    0% {
+        left: -80%;
+    }
+    45%, 100% {
+        left: 130%;
+    }
 }
 
 .submit-btn:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 10px 30px rgba(217, 119, 6, 0.48);
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 
+        0 12px 32px rgba(224, 122, 27, 0.52),
+        inset 0 1px 1px rgba(255, 255, 255, 0.6);
 }
 
 .submit-btn:active {
-    transform: translateY(0) scale(0.98);
+    transform: translateY(-1px) scale(0.99);
 }
 
 .submit-btn:disabled {
@@ -1743,26 +1720,47 @@ body::before {
 }
 
 .view-details-btn {
+    position: relative;
+    overflow: hidden;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
     width: 100%;
-    padding: 10px 16px;
-    background: linear-gradient(135deg, #c08a42 0%, #a06e28 100%);
+    padding: 11px 20px;
+    background: linear-gradient(135deg, #e07a1b 0%, #b85a00 100%);
     color: #ffffff !important;
-    font-weight: 600;
-    font-size: 0.88rem;
-    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: 50px;
     text-decoration: none !important;
-    box-shadow: 0 4px 12px rgba(160, 110, 40, 0.22);
+    box-shadow: 0 4px 16px rgba(224, 122, 27, 0.35);
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1;
+}
+
+.view-details-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -80%;
+    width: 60%;
+    height: 200%;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.45) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: skewX(-25deg);
+    animation: reactButtonShine 3.2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    z-index: 2;
 }
 
 .view-details-btn:hover {
-    background: linear-gradient(135deg, #d49b4d 0%, #b57e33 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(160, 110, 40, 0.32);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(224, 122, 27, 0.48);
     color: #ffffff !important;
 }
 
