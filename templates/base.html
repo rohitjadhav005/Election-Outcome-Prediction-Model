@@ -3,20 +3,26 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="description"
         content="{% block meta_description %}Predict Maharashtra Assembly & Electoral outcomes using AI machine learning{% endblock %}">
     <title>{% block title %}Election Outcome Predictor | Maharashtra AI Analytics{% endblock %}</title>
+
+    <!-- Performance: preconnect to font origin before CSS is parsed -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link rel="icon" type="image/png" href="{{ url_for('static', path='images/logo.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
-    
+
     <!-- PWA / Mobile Web App Meta -->
     <link rel="manifest" href="/static/manifest.json">
     <meta name="theme-color" content="#c08a42">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Election Predictor">
-    
+
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -26,12 +32,12 @@
         <div class="nav-container">
             <a href="/" class="nav-logo">
                 <img src="{{ url_for('static', path='images/logo.png') }}" alt="Election Predictor Logo"
-                    class="nav-logo-img">
+                    class="nav-logo-img" width="36" height="36" loading="eager">
                 <span>Election Predictor</span>
             </a>
 
             <!-- Hamburger Menu for Mobile -->
-            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
                 <span class="hamburger"></span>
                 <span class="hamburger"></span>
                 <span class="hamburger"></span>
@@ -69,8 +75,8 @@
         <p>Historical Data: 1952-2024 | Maharashtra Assembly & Electoral Analytics</p>
     </footer>
 
-    <!-- Navigation JavaScript -->
-    <script src="{{ url_for('static', path='js/navigation.js') }}"></script>
+    <!-- Navigation JavaScript (deferred for faster initial render) -->
+    <script src="{{ url_for('static', path='js/navigation.js') }}" defer></script>
 
     <!-- Page-specific JavaScript -->
     {% block extra_js %}{% endblock %}
@@ -81,14 +87,12 @@
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
                     .then(registration => {
-                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                        console.log('SW registered, scope:', registration.scope);
                     })
-                    .catch(error => {
-                        console.log('ServiceWorker registration failed: ', error);
-                    });
+                    .catch(() => {/* Silent fail - SW optional */});
             });
         }
     </script>
 </body>
 
-</html>
+</html>
