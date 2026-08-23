@@ -168,11 +168,12 @@ function mountGrainient(container, opts = {}) {
   // Create canvas — promoted to its own GPU compositor layer
   const canvas = document.createElement('canvas');
   canvas.style.cssText = [
-    'position:absolute',
+    'position:fixed',
     'top:0',
     'left:0',
-    'width:100%',
-    'height:100%',
+    'width:100vw',
+    'height:100vh',
+    'height:100dvh',
     'display:block',
     'pointer-events:none',
     'will-change:transform',          // own compositor layer
@@ -285,22 +286,8 @@ function mountGrainient(container, opts = {}) {
   let lastFrameTime = 0;
   const t0 = performance.now();
 
-  // Pause WebGL rendering during active scroll & touch swipe to give 100% GPU to smooth scrolling
-  function onScroll() {
-    isScrolling = true;
-    clearTimeout(scrollTimeout);
-    scrollTimeout = setTimeout(() => {
-      isScrolling = false;
-    }, 150);
-  }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('touchstart', onScroll, { passive: true });
-  window.addEventListener('touchmove', onScroll, { passive: true });
-  window.addEventListener('touchend', onScroll, { passive: true });
-
   function loop(t) {
     raf = requestAnimationFrame(loop);
-    if (isScrolling) return;               // Free 100% GPU during scrolling
     if (t - lastFrameTime < 33) return;    // Cap at ~30 FPS (ambient gradient looks identical)
     lastFrameTime = t;
 
