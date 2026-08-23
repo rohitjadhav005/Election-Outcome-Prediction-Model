@@ -2320,51 +2320,56 @@ body {
 }
 
 /* ===================================
-   FOOTER — dark glass, tricolor stripe
+   FOOTER — sleek glass & gradient accent
    =================================== */
 
 .footer {
     width: 100%;
     margin-top: 60px;
-    padding: 28px 20px;
+    padding: 32px 20px 28px;
     text-align: center;
-    background: rgba(6, 12, 26, 0.88);  /* more opaque = less blur needed */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-top: 3px solid transparent;
-    background-image:
-        linear-gradient(rgba(6,12,26,0.88), rgba(6,12,26,0.88)),
-        linear-gradient(90deg, #ff9933 33.3%, rgba(255,255,255,0.25) 33.3%, rgba(255,255,255,0.25) 66.6%, #138808 66.6%);
-    background-origin: border-box;
-    background-clip: padding-box, border-box;
-    box-shadow: 0 -6px 40px rgba(0, 0, 0, 0.40);
+    background: linear-gradient(to top, rgba(6, 12, 26, 0.70), rgba(6, 12, 26, 0.20));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(255, 255, 255, 0.10);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 8px;
     position: relative;
     z-index: 10;
 }
 
-.footer p {
-    font-size: 0.92rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.75);
+.footer-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.92);
     margin: 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.40);
     letter-spacing: -0.01em;
 }
 
-.footer p:first-child {
-    color: rgba(255, 255, 255, 0.92);
-    font-weight: 700;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+.footer-highlight {
+    background: linear-gradient(135deg, #fdba74, #f97316);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
 }
 
-.footer p:last-child {
-    color: rgba(255, 255, 255, 0.45);
+.footer-subtext {
     font-size: 0.85rem;
     font-weight: 500;
+    color: rgba(255, 255, 255, 0.70);
+    margin: 0;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.40);
+}
+
+.footer-divider {
+    color: rgba(249, 115, 22, 0.70);
+    margin: 0 6px;
 }
 
 /* ===================================
