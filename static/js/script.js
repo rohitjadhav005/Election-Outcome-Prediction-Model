@@ -25,11 +25,18 @@ const PARTY_DEFAULTS = {
 };
 
 // ── Toggle form visibility ────────────────────────────────────
-if (startPredictionBtn) {
-    startPredictionBtn.addEventListener('click', () => {
-        startPredictionContainer.classList.add('hidden');
-        form.classList.remove('hidden');
-    });
+function setupFormToggle() {
+    const startBtn = document.getElementById('startPredictionBtn');
+    const startContainer = document.getElementById('startPredictionContainer');
+    const predForm = document.getElementById('predictionForm');
+
+    if (startBtn && startContainer && predForm) {
+        startBtn.addEventListener('click', () => {
+            startContainer.classList.add('hidden');
+            predForm.classList.remove('hidden');
+            predForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    }
 }
 
 // ── Load live stats into banner ───────────────────────────────
@@ -62,11 +69,18 @@ function autoSelectParty() {
     const params = new URLSearchParams(window.location.search);
     const party = params.get('party');
     if (party) {
+        const startContainer = document.getElementById('startPredictionContainer');
+        const predForm = document.getElementById('predictionForm');
+        if (startContainer) startContainer.classList.add('hidden');
+        if (predForm) predForm.classList.remove('hidden');
+
         const select = document.getElementById('partyName');
-        for (const opt of select.options) {
-            if (opt.value === party) {
-                select.value = party;
-                break;
+        if (select) {
+            for (const opt of select.options) {
+                if (opt.value === party) {
+                    select.value = party;
+                    break;
+                }
             }
         }
     }
@@ -331,6 +345,7 @@ function resetForm() {
 
 // ── Input enhancements ────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+    setupFormToggle();
     loadStats();
     autoSelectParty();
 

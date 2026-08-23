@@ -39,11 +39,24 @@
     <!-- Prediction Form Card  -->
     <section class="form-section" id="formSection">
         <div class="form-card glass-panel">
-            <h2 class="form-title">Predict Electoral Outcome</h2>
-            <p class="form-description">Enter party & alliance strength to calculate 2027 win probability</p>
+            
+            <!-- Form Opening Toggle CTA Banner -->
+            <div id="startPredictionContainer" class="start-prediction-container" style="text-align: center; padding: 15px 10px;">
+                <h2 class="form-title" style="font-size: 2.1rem; margin-bottom: 12px; font-family: 'Plus Jakarta Sans', sans-serif;">Predict 2027 Electoral Outcome</h2>
+                <p class="form-description" style="max-width: 520px; margin: 0 auto 28px; font-size: 1.05rem; line-height: 1.6;">
+                    Calculate Maharashtra Assembly win probabilities using party strength, MLA counts, and 72 years of historical election data.
+                </p>
+                <div style="display: flex; justify-content: center;">
+                    <button type="button" id="startPredictionBtn" class="submit-btn" style="display: inline-flex; width: auto; padding: 16px 42px; font-size: 1.1rem;">
+                        <span class="btn-text">⚡ Calculate Win Probability</span>
+                    </button>
+                </div>
+            </div>
 
-            <!-- Prediction Form -->
-            <form id="predictionForm" class="prediction-form">
+            <!-- Prediction Form (Hidden initially until toggled) -->
+            <form id="predictionForm" class="prediction-form hidden">
+                <h2 class="form-title">Predict Electoral Outcome</h2>
+                <p class="form-description">Enter party & alliance strength to calculate 2027 win probability</p>
                 <div class="form-grid">
 
                     <!-- Party Name -->
