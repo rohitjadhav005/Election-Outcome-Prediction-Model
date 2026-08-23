@@ -13,11 +13,15 @@
 
     <!-- Parties Grid -->
     <section class="parties-grid" id="partiesGrid">
-        <!-- Parties will be loaded dynamically via JavaScript -->
-        <div class="loading-message"
-            style="grid-column: 1/-1; text-align: center; padding: 40px; color: white; font-size: 1.2rem;">
-            Loading parties...
+        <!-- Skeleton loading placeholder cards -->
+        {% for i in range(6) %}
+        <div class="party-card glass-panel skeleton-card" style="min-height: 220px; opacity: 0.6; pointer-events: none;">
+            <div style="width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.2); margin: 0 auto 15px;"></div>
+            <div style="width: 60%; height: 20px; background: rgba(255,255,255,0.2); margin: 0 auto 20px; border-radius: 4px;"></div>
+            <div style="width: 100%; height: 14px; background: rgba(255,255,255,0.15); margin: 8px 0; border-radius: 4px;"></div>
+            <div style="width: 100%; height: 14px; background: rgba(255,255,255,0.15); margin: 8px 0; border-radius: 4px;"></div>
         </div>
+        {% endfor %}
     </section>
 </div>
 {% endblock %}

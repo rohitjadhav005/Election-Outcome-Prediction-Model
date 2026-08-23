@@ -17,7 +17,7 @@
 
     <!-- PWA / Mobile Web App Meta -->
     <link rel="manifest" href="/static/manifest.json">
-    <meta name="theme-color" content="#c08a42">
+    <meta name="theme-color" content="#060c1a">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -27,6 +27,9 @@
 </head>
 
 <body>
+    <!-- Full-page Grainient canvas host (behind everything) -->
+    <div id="grainient-bg" aria-hidden="true"></div>
+
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="nav-container">
@@ -74,6 +77,39 @@
         <p>© 2026 Election Outcome Prediction System | Powered by AI & Machine Learning</p>
         <p>Historical Data: 1952-2024 | Maharashtra Assembly & Electoral Analytics</p>
     </footer>
+
+    <!-- Global WebGL Background Script -->
+    <script src="{{ url_for('static', path='js/grainient.js') }}"></script>
+    <script>
+      (function () {
+        var host = document.getElementById('grainient-bg');
+        if (!host || host.childElementCount > 0) return;
+        window.mountGrainient(host, {
+          color1:         '#fdba74',
+          color2:         '#1e3a8a',
+          color3:         '#060c1a',
+          timeSpeed:       0.14,
+          colorBalance:    0.05,
+          warpStrength:    0.85,
+          warpFrequency:   3.8,
+          warpSpeed:       1.2,
+          warpAmplitude:   70.0,
+          blendAngle:      20.0,
+          blendSoftness:   0.10,
+          rotationAmount:  380.0,
+          noiseScale:      1.8,
+          grainAmount:     0.048,
+          grainScale:      2.8,
+          grainAnimated:   false,
+          contrast:        1.28,
+          gamma:           1.08,
+          saturation:      1.20,
+          centerX:         0.0,
+          centerY:         0.04,
+          zoom:            0.92
+        });
+      })();
+    </script>
 
     <!-- Navigation JavaScript (deferred for faster initial render) -->
     <script src="{{ url_for('static', path='js/navigation.js') }}" defer></script>

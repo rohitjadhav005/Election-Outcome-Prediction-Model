@@ -39,9 +39,9 @@
     --color-accent-alt:   var(--navy-light);
 
     /* ── GLASS ── */
-    --glass-white: rgba(255, 255, 255, 0.88);
-    --glass-dark:  rgba(8, 14, 30, 0.65);
-    --glass-blur:  blur(28px) saturate(160%);
+    --glass-white: rgba(255, 255, 255, 0.94);
+    --glass-dark:  rgba(6, 12, 26, 0.80);
+    --glass-blur:  blur(8px);
 
     /* ── GRADIENTS ── */
     --grad-primary:  linear-gradient(135deg, var(--saffron) 0%, var(--saffron-dim) 100%);
@@ -218,10 +218,9 @@ body {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(6, 12, 26, 0.80);
-    /* Reduced blur — heavy blur over a fixed WebGL canvas causes scroll jank */
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(6, 12, 26, 0.88);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     border-bottom: 1px solid var(--white-08);
     box-shadow:
         0 4px 24px rgba(0, 0, 0, 0.40),
@@ -273,22 +272,26 @@ body {
 }
 
 .nav-link {
-    color: var(--white-80);
+    color: rgba(255, 255, 255, 0.75);
     text-decoration: none;
     padding: 8px 18px;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-pill);
     font-weight: 600;
     font-size: 0.95rem;
-    transition: all 0.25s ease;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
 }
 
-.nav-link:hover,
+.nav-link:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.12);
+}
+
 .nav-link.active {
-    color: var(--white);
-    background: rgba(249, 115, 22, 0.22);
+    color: #ffffff !important;
+    background: var(--grad-primary);
     font-weight: 700;
-    box-shadow: 0 2px 12px var(--saffron-glow);
+    box-shadow: 0 4px 16px var(--saffron-glow);
 }
 
 .nav-toggle {
@@ -355,14 +358,20 @@ body {
     }
 
     .nav-link {
-        padding: 18px 24px;
+        padding: 16px 24px;
         border-radius: 0;
-        border-bottom: 1px solid rgba(200, 185, 155, 0.12);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         font-size: 1.15rem;
         min-height: 56px;
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .nav-link.active {
+        border-radius: var(--radius-pill);
+        margin: 6px 20px;
+        border-bottom: none;
     }
 
     .nav-item:last-child .nav-link {
@@ -459,9 +468,9 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 0;
-    background: rgba(6, 12, 26, 0.72);  /* more opaque = less blur needed */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(6, 12, 26, 0.82);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     border: 1px solid var(--white-12);
     border-radius: var(--radius-md);
     padding: 14px 24px;
@@ -741,10 +750,7 @@ body {
     width: 100%;
     position: relative;
     animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    background: rgba(255, 255, 255, 0.97);   /* slightly more opaque = less blur needed */
-    /* Reduced blur — overlapping blur + fixed WebGL canvas is expensive */
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.96);
     border: 1.5px solid rgba(255, 255, 255, 0.98);
     border-radius: var(--radius-xl);
     box-shadow:
@@ -752,6 +758,7 @@ body {
         0 0 0 1px rgba(30, 58, 138, 0.08),
         inset 0 1px 0 rgba(255, 255, 255, 1);
     overflow: hidden;
+    contain: layout paint;
 }
 
 .form-grid {
