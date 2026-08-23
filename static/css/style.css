@@ -90,25 +90,38 @@ body {
    GRAINIENT ANIMATED BACKGROUND HOST
    =================================== */
 
+/* ===================================
+   GRAINIENT ANIMATED BACKGROUND HOST
+   =================================== */
+
 #grainient-bg {
     position: fixed;
     inset: 0;
     z-index: -10;
-    /* canvas fills this div */
+
+    /* GPU compositor layer — eliminates repaint on scroll */
+    will-change: transform;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+
+    pointer-events: none;
+    isolation: isolate;
 }
 
-/* Soft dark vignette over the canvas so content is always readable */
+/* Dark vignette rendered via CSS — keeps the canvas layer untouched */
 #grainient-bg::after {
     content: '';
     position: absolute;
     inset: 0;
-    background:
-        radial-gradient(
-            ellipse 80% 60% at 50% 0%,
-            rgba(6, 12, 26, 0.08) 0%,
-            rgba(6, 12, 26, 0.55) 100%
-        );
+    background: radial-gradient(
+        ellipse 100% 70% at 50% 0%,
+        transparent 0%,
+        rgba(6, 12, 26, 0.45) 100%
+    );
     pointer-events: none;
+    /* Do NOT put will-change here — keep vignette on same layer */
 }
 
 /* Mobile: disable fixed bg */
@@ -120,6 +133,19 @@ body {
 
 /* Subtle page-wide color tint removed — Grainient provides the atmosphere */
 body::before { display: none; }
+
+/* ===================================
+   SCROLL — smooth native scrolling
+   =================================== */
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    -webkit-overflow-scrolling: touch;  /* smooth momentum scroll on iOS */
+    overscroll-behavior-y: none;        /* prevent scroll chaining */
+}
 
 .container {
     max-width: 1200px;
@@ -193,8 +219,9 @@ body::before { display: none; }
     position: absolute;
     inset: 0;
     background: rgba(6, 12, 26, 0.80);
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    /* Reduced blur — heavy blur over a fixed WebGL canvas causes scroll jank */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--white-08);
     box-shadow:
         0 4px 24px rgba(0, 0, 0, 0.40),
@@ -401,12 +428,17 @@ body::before { display: none; }
     font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
 }
 
+/* 'Predictor' — pure white so it's always readable on the animated bg.
+   A subtle warm drop-shadow gives it depth without blending into saffron. */
 .gradient-text {
-    background: var(--grad-title);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 2px 12px var(--saffron-glow));
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
+    background: none;
+    text-shadow:
+        0 2px 0 rgba(0,0,0,0.40),
+        0 0 32px rgba(249, 115, 22, 0.50),
+        0 0 64px rgba(249, 115, 22, 0.25);
+    filter: none;
 }
 
 /* Subtitle */
@@ -427,9 +459,9 @@ body::before { display: none; }
     display: inline-flex;
     align-items: center;
     gap: 0;
-    background: rgba(6, 12, 26, 0.60);
-    backdrop-filter: blur(24px) saturate(160%);
-    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    background: rgba(6, 12, 26, 0.72);  /* more opaque = less blur needed */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--white-12);
     border-radius: var(--radius-md);
     padding: 14px 24px;
@@ -562,7 +594,7 @@ body::before { display: none; }
     text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
 }
 
-/* Hero Metrics Bar */
+/* Hero Metrics Bar — dark glass to match animated bg */
 .hero-metrics {
     position: relative;
     z-index: 1;
@@ -570,15 +602,15 @@ body::before { display: none; }
     align-items: center;
     justify-content: center;
     gap: 20px;
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(226, 232, 240, 0.9);
+    background: rgba(6, 12, 26, 0.60);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid var(--white-12);
     border-radius: 20px;
     padding: 14px 28px;
     width: 100%;
     max-width: 950px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.30), inset 0 1px 0 var(--white-08);
 }
 
 .metric-chip {
@@ -600,14 +632,15 @@ body::before { display: none; }
 .metric-value {
     font-size: 1.1rem;
     font-weight: 800;
-    color: #0f172a;
+    color: var(--saffron-light);  /* warm saffron — readable on dark glass */
     line-height: 1.2;
+    text-shadow: 0 0 16px var(--saffron-glow);
 }
 
 .metric-label {
     font-size: 0.78rem;
     font-weight: 600;
-    color: #475569;
+    color: var(--white-60);       /* white-60 on dark glass bg */
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -615,7 +648,7 @@ body::before { display: none; }
 .metric-divider {
     width: 1px;
     height: 30px;
-    background: rgba(203, 213, 225, 0.8);
+    background: var(--white-12);
 }
 
 /* Mobile Responsiveness for Hero */
@@ -708,9 +741,10 @@ body::before { display: none; }
     width: 100%;
     position: relative;
     animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(32px) saturate(180%);
-    -webkit-backdrop-filter: blur(32px) saturate(180%);
+    background: rgba(255, 255, 255, 0.97);   /* slightly more opaque = less blur needed */
+    /* Reduced blur — overlapping blur + fixed WebGL canvas is expensive */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1.5px solid rgba(255, 255, 255, 0.98);
     border-radius: var(--radius-xl);
     box-shadow:
@@ -1303,15 +1337,15 @@ body::before { display: none; }
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: var(--glass-dark);
-    backdrop-filter: blur(28px) saturate(160%);
-    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    background: rgba(6, 12, 26, 0.78);  /* more opaque = less blur needed */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--white-12);
     box-shadow: 0 8px 40px rgba(0,0,0,0.30), inset 0 1px 0 var(--white-08);
     /* Saffron-to-navy accent top border */
     border-top: 3px solid transparent;
     background-image:
-        linear-gradient(rgba(6,12,26,0.65), rgba(6,12,26,0.65)),
+        linear-gradient(rgba(6,12,26,0.78), rgba(6,12,26,0.78)),
         linear-gradient(90deg, var(--saffron) 0%, var(--navy) 100%);
     background-origin: border-box;
     background-clip: padding-box, border-box;
@@ -1571,13 +1605,14 @@ body::before { display: none; }
 .party-info-box {
     margin-top: 30px;
     padding-top: 25px;
-    border-top: 1px dashed rgba(180, 160, 120, 0.30);
+    border-top: 1px dashed rgba(30, 58, 138, 0.18);
     text-align: left;
 }
 
 .party-info-title {
     font-size: 1.1rem;
-    color: #2c2015;
+    font-weight: 700;
+    color: var(--navy-mid);
     margin-bottom: 15px;
 }
 
@@ -1589,16 +1624,15 @@ body::before { display: none; }
 }
 
 .party-stat {
-    background: rgba(255, 252, 244, 0.62);
+    background: rgba(240, 244, 255, 0.70);
     padding: 12px;
     border-radius: 1rem;
-    border: 1px solid rgba(200, 185, 155, 0.45);
+    border: 1px solid rgba(30, 58, 138, 0.15);
     position: relative;
     overflow: hidden;
     backdrop-filter: blur(20px) saturate(160%);
     -webkit-backdrop-filter: blur(20px) saturate(160%);
-    box-shadow: 0 4px 16px rgba(90, 70, 40, 0.08),
-        inset 0 2px 8px rgba(255, 255, 255, 0.40);
+    box-shadow: 0 4px 16px rgba(6, 12, 26, 0.06), inset 0 2px 8px rgba(255,255,255,0.50);
 }
 
 .party-stat::after {
@@ -1616,28 +1650,30 @@ body::before { display: none; }
 
 .stat-label {
     font-size: 0.8rem;
-    color: rgba(50, 38, 22, 0.50);
+    color: rgba(30, 58, 138, 0.50);
+    font-weight: 600;
     margin-bottom: 4px;
 }
 
 .stat-value {
     font-size: 1.2rem;
-    font-weight: 600;
-    color: #2c2015;
+    font-weight: 700;
+    color: var(--navy-mid);
 }
 
 .view-party-btn {
     display: block;
     text-align: center;
-    color: #a06e2a;
+    color: var(--saffron);
     text-decoration: none;
     font-size: 0.95rem;
+    font-weight: 600;
     padding: 10px;
     transition: color 0.2s ease;
 }
 
 .view-party-btn:hover {
-    color: #7a5020;
+    color: var(--saffron-dim);
 }
 
 /* Parties Grid */
@@ -1692,7 +1728,7 @@ body::before { display: none; }
 .party-name {
     font-size: 1.3rem;
     font-weight: 700;
-    color: #111827;
+    color: var(--navy-mid);
     text-align: center;
     margin-bottom: 20px;
     font-family: 'Plus Jakarta Sans', sans-serif;
@@ -1702,8 +1738,9 @@ body::before { display: none; }
     display: flex;
     justify-content: space-between;
     padding: 8px 0;
-    border-bottom: 1px solid rgba(180, 160, 120, 0.15);
-    color: #3d2e1a;
+    border-bottom: 1px solid rgba(30, 58, 138, 0.10);
+    color: var(--navy-mid);
+    font-weight: 500;
 }
 
 /* ===================================
@@ -2193,13 +2230,12 @@ body::before { display: none; }
     margin-top: 60px;
     padding: 28px 20px;
     text-align: center;
-    background: rgba(8, 14, 30, 0.82);
-    backdrop-filter: blur(28px) saturate(160%);
-    -webkit-backdrop-filter: blur(28px) saturate(160%);
-    /* Tricolor top stripe */
+    background: rgba(6, 12, 26, 0.88);  /* more opaque = less blur needed */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-top: 3px solid transparent;
     background-image:
-        linear-gradient(rgba(8,14,30,0.82), rgba(8,14,30,0.82)),
+        linear-gradient(rgba(6,12,26,0.88), rgba(6,12,26,0.88)),
         linear-gradient(90deg, #ff9933 33.3%, rgba(255,255,255,0.25) 33.3%, rgba(255,255,255,0.25) 66.6%, #138808 66.6%);
     background-origin: border-box;
     background-clip: padding-box, border-box;

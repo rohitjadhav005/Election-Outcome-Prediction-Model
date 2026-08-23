@@ -165,12 +165,30 @@ function mountGrainient(container, opts = {}) {
     zoom:             0.88
   }, opts);
 
-  // Create canvas
+  // Create canvas — promoted to its own GPU compositor layer
   const canvas = document.createElement('canvas');
-  canvas.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;display:block;';
+  canvas.style.cssText = [
+    'position:absolute',
+    'top:0',
+    'left:0',
+    'width:100%',
+    'height:100%',
+    'display:block',
+    'will-change:transform',          // own compositor layer
+    'transform:translateZ(0)',         // force GPU rasterisation
+    '-webkit-transform:translateZ(0)',
+    'backface-visibility:hidden',
+    '-webkit-backface-visibility:hidden',
+  ].join(';');
   container.appendChild(canvas);
 
-  const gl = canvas.getContext('webgl2', { alpha: false, antialias: false });
+  const gl = canvas.getContext('webgl2', {
+    alpha: false,
+    antialias: false,
+    powerPreference: 'high-performance',  // prefer discrete GPU
+    preserveDrawingBuffer: false,
+    desynchronized: true,                 // reduces latency on supported browsers
+  });
   if (!gl) {
     console.warn('[Grainient] WebGL2 not supported — falling back gracefully.');
     container.removeChild(canvas);
@@ -230,30 +248,36 @@ function mountGrainient(container, opts = {}) {
   }
   applyUniforms();
 
-  // Resize
+  // Resize — debounced so rapid layout shifts don't thrash the GL context
+  let resizeTimer = 0;
   function resize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const rect = container.getBoundingClientRect();
-    const w = Math.max(1, Math.floor(rect.width  * dpr));
-    const h = Math.max(1, Math.floor(rect.height * dpr));
-    canvas.width  = w;
-    canvas.height = h;
-    gl.viewport(0, 0, w, h);
-    gl.uniform2f(uloc.iResolution, w, h);
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5); // cap at 1.5 for perf
+      const rect = container.getBoundingClientRect();
+      const w = Math.max(1, Math.floor(rect.width  * dpr));
+      const h = Math.max(1, Math.floor(rect.height * dpr));
+      if (canvas.width === w && canvas.height === h) return; // skip if unchanged
+      canvas.width  = w;
+      canvas.height = h;
+      gl.viewport(0, 0, w, h);
+      gl.uniform2f(uloc.iResolution, w, h);
+    }, 100);
   }
 
   const ro = new ResizeObserver(resize);
   ro.observe(container);
   resize();
 
-  // Render loop
+  // Render loop — gl.useProgram is set ONCE outside the loop
+  gl.useProgram(program);
+
   let raf = 0;
   let isVisible = true;
   let isPageVisible = !document.hidden;
   const t0 = performance.now();
 
   function loop(t) {
-    gl.useProgram(program);
     gl.uniform1f(uloc.iTime, (t - t0) * 0.001);
     gl.bindVertexArray(vao);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
