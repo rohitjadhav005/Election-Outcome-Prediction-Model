@@ -174,6 +174,7 @@ function mountGrainient(container, opts = {}) {
     'width:100%',
     'height:100%',
     'display:block',
+    'pointer-events:none',
     'will-change:transform',          // own compositor layer
     'transform:translateZ(0)',         // force GPU rasterisation
     '-webkit-transform:translateZ(0)',
@@ -248,13 +249,16 @@ function mountGrainient(container, opts = {}) {
   }
   applyUniforms();
 
+  // Mobile optimization: lower DPR scale on touch devices for silky smooth 60fps mobile scrolling
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || ('ontouchstart' in window) || (window.innerWidth <= 768);
+
   // Resize — debounced so rapid layout shifts don't thrash the GL context
   let resizeTimer = 0;
   function resize() {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      // DPR capped at 1.0 for ambient gradient — saves 75% GPU fill rate on Retina displays
-      const dpr = 1.0;
+      // Mobile: 0.75x DPR (saves 75%+ GPU fill-rate on mobile screens)
+      const dpr = isMobile ? 0.75 : 1.0;
       const rect = container.getBoundingClientRect();
       const w = Math.max(1, Math.floor(rect.width  * dpr));
       const h = Math.max(1, Math.floor(rect.height * dpr));
@@ -281,15 +285,18 @@ function mountGrainient(container, opts = {}) {
   let lastFrameTime = 0;
   const t0 = performance.now();
 
-  // Pause WebGL rendering during active scroll to give 100% GPU to smooth scrolling
+  // Pause WebGL rendering during active scroll & touch swipe to give 100% GPU to smooth scrolling
   function onScroll() {
     isScrolling = true;
     clearTimeout(scrollTimeout);
     scrollTimeout = setTimeout(() => {
       isScrolling = false;
-    }, 120);
+    }, 150);
   }
   window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('touchstart', onScroll, { passive: true });
+  window.addEventListener('touchmove', onScroll, { passive: true });
+  window.addEventListener('touchend', onScroll, { passive: true });
 
   function loop(t) {
     raf = requestAnimationFrame(loop);
@@ -331,6 +338,9 @@ function mountGrainient(container, opts = {}) {
     io.disconnect();
     document.removeEventListener('visibilitychange', onVisibility);
     window.removeEventListener('scroll', onScroll);
+    window.removeEventListener('touchstart', onScroll);
+    window.removeEventListener('touchmove', onScroll);
+    window.removeEventListener('touchend', onScroll);
     gl.deleteProgram(program);
     gl.deleteBuffer(vbo);
     gl.deleteVertexArray(vao);

@@ -64,31 +64,25 @@
     box-sizing: border-box;
 }
 
-html,
-body {
-    overflow-x: hidden;
-    width: 100%;
-    position: relative;
+html {
     scroll-behavior: smooth;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    touch-action: pan-y;
 }
 
 body {
     font-family: 'Inter', sans-serif;
     min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+    touch-action: pan-y;
     color: var(--color-text);
     line-height: 1.6;
     background: var(--navy-dark);
     padding-top: 65px;
-    will-change: auto;
     position: relative;
     z-index: 0;
 }
-
-/* ===================================
-   GRAINIENT ANIMATED BACKGROUND HOST
-   =================================== */
 
 /* ===================================
    GRAINIENT ANIMATED BACKGROUND HOST
@@ -98,19 +92,15 @@ body {
     position: fixed;
     inset: 0;
     z-index: -10;
-
-    /* GPU compositor layer — eliminates repaint on scroll */
     will-change: transform;
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-
     pointer-events: none;
     isolation: isolate;
 }
 
-/* Dark vignette rendered via CSS — keeps the canvas layer untouched */
 #grainient-bg::after {
     content: '';
     position: absolute;
@@ -121,30 +111,6 @@ body {
         rgba(6, 12, 26, 0.45) 100%
     );
     pointer-events: none;
-    /* Do NOT put will-change here — keep vignette on same layer */
-}
-
-/* Mobile: disable fixed bg */
-@media (max-width: 768px) {
-    body {
-        background-attachment: scroll;
-    }
-}
-
-/* Subtle page-wide color tint removed — Grainient provides the atmosphere */
-body::before { display: none; }
-
-/* ===================================
-   SCROLL — smooth native scrolling
-   =================================== */
-html {
-    scroll-behavior: smooth;
-    -webkit-text-size-adjust: 100%;
-}
-
-body {
-    -webkit-overflow-scrolling: touch;  /* smooth momentum scroll on iOS */
-    overscroll-behavior-y: none;        /* prevent scroll chaining */
 }
 
 .container {
@@ -1398,23 +1364,29 @@ body {
     .quick-insights-bar {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 14px;
-        padding: 18px 16px;
+        gap: 16px 12px;
+        padding: 20px 16px;
         text-align: center;
-        border-radius: 1.4rem;
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
+        border-radius: var(--radius-lg);
+        box-sizing: border-box;
+        width: 100%;
     }
 
     .insight-item {
+        display: flex;
         flex-direction: column;
         gap: 4px;
         align-items: center;
         justify-content: center;
+        text-align: center;
+        padding: 6px 4px;
     }
 
     .insight-text {
+        display: flex;
+        flex-direction: column;
         align-items: center;
+        text-align: center;
     }
 
     .insight-divider {
@@ -1422,11 +1394,14 @@ body {
     }
 
     .insight-number {
-        font-size: 1rem;
+        font-size: 1.05rem;
+        text-align: center;
     }
 
     .insight-label {
         font-size: 0.72rem;
+        text-align: center;
+        line-height: 1.35;
     }
 }
 
@@ -1439,20 +1414,21 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 25px;
-    border-bottom: 1px solid rgba(180, 160, 120, 0.25);
+    border-bottom: 1px solid rgba(30, 58, 138, 0.15);
     padding-bottom: 15px;
 }
 
 .result-title {
     font-size: 1.4rem;
-    color: #2c2015;
-    font-weight: 600;
+    color: var(--navy-mid);
+    font-weight: 700;
+    font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 .close-btn {
-    background: rgba(200, 185, 155, 0.15);
+    background: rgba(30, 58, 138, 0.08);
     border: none;
-    color: rgba(50, 38, 22, 0.55);
+    color: var(--navy-mid);
     width: 35px;
     height: 35px;
     border-radius: 50%;
@@ -1462,8 +1438,8 @@ body {
 }
 
 .close-btn:hover {
-    background: rgba(200, 80, 60, 0.12);
-    color: #c0392b;
+    background: var(--saffron-subtle);
+    color: var(--saffron);
 }
 
 .result-content {
@@ -2274,4 +2250,35 @@ body {
     color: rgba(255, 255, 255, 0.45);
     font-size: 0.85rem;
     font-weight: 500;
+}
+
+/* ===================================
+   MOBILE SMOOTH SCROLLING OPTIMIZATIONS
+   =================================== */
+@media (max-width: 768px) {
+    html, body {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+    }
+
+    /* Disable GPU-heavy realtime blurs on mobile screens for smooth 60fps touch momentum scroll */
+    .glass-panel,
+    .form-card,
+    .result-card,
+    .navbar::after,
+    .hero-stats,
+    .quick-insights-bar,
+    .footer {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
+    .navbar::after {
+        background: rgba(6, 12, 26, 0.95) !important;
+    }
+
+    .form-card,
+    .result-card {
+        background: rgba(255, 255, 255, 0.98) !important;
+    }
 }
