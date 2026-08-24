@@ -74,13 +74,20 @@ function autoSelectParty() {
         if (startContainer) startContainer.classList.add('hidden');
         if (predForm) predForm.classList.remove('hidden');
 
-        const select = document.getElementById('partyName');
-        if (select) {
-            for (const opt of select.options) {
-                if (opt.value === party) {
-                    select.value = party;
-                    break;
+        const wrapper = document.getElementById('partySelectWrapper');
+        if (wrapper) {
+            const hiddenInput = wrapper.querySelector('#partyName');
+            const opt = wrapper.querySelector(`.custom-select-option[data-value="${party}"]`);
+            if (hiddenInput && opt) {
+                hiddenInput.value = party;
+                const labelText = opt.getAttribute('data-label') || opt.querySelector('.option-name')?.textContent || opt.textContent.trim();
+                const textSpan = wrapper.querySelector('.custom-select-text');
+                if (textSpan) {
+                    textSpan.textContent = labelText;
+                    textSpan.classList.remove('placeholder-text');
                 }
+                wrapper.querySelectorAll('.custom-select-option').forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
             }
         }
     }
@@ -382,7 +389,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (candWrapper) {
                 const opt = candWrapper.querySelector(`.custom-select-option[data-value="${def.type}"]`);
                 if (opt) {
-                    candWrapper.querySelector('.custom-select-text').textContent = opt.textContent;
+                    const candLabel = opt.getAttribute('data-label') || opt.querySelector('.option-name')?.textContent || opt.textContent.trim();
+                    candWrapper.querySelector('.custom-select-text').textContent = candLabel;
                     candWrapper.querySelector('.custom-select-text').classList.remove('placeholder-text');
                     candWrapper.querySelectorAll('.custom-select-option').forEach(o => o.classList.remove('selected'));
                     opt.classList.add('selected');
@@ -459,7 +467,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.stopPropagation();
                 
                 // Set text and value
-                textSpan.textContent = option.textContent;
+                const labelText = option.getAttribute('data-label') || option.querySelector('.option-name')?.textContent || option.textContent.trim();
+                textSpan.textContent = labelText;
                 textSpan.classList.remove('placeholder-text');
                 const val = option.getAttribute('data-value');
                 hiddenInput.value = val;

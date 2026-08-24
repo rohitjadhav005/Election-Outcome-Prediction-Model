@@ -75,23 +75,50 @@
                             <div class="custom-select-backdrop" id="partySelectBackdrop"></div>
                             <div class="custom-options-list">
                                 <div class="custom-select-mobile-header">
-                                    <span>Select a Party</span>
-                                    <button type="button" class="close-select-btn" data-target="partySelectWrapper">✕</button>
+                                    <div class="mobile-drag-handle"></div>
+                                    <div class="mobile-header-title-row">
+                                        <span>Select a Party</span>
+                                        <button type="button" class="close-select-btn" data-target="partySelectWrapper">✕</button>
+                                    </div>
                                 </div>
                                 <div class="custom-options-scroll">
                                     <div class="custom-select-optgroup-label">Mahayuti Alliance (2024 — 235 MLAs)</div>
-                                    <div class="custom-select-option" data-value="BJP">BJP — Bharatiya Janata Party (132 MLAs)</div>
-                                    <div class="custom-select-option" data-value="SS(Shinde)">Shiv Sena – Shinde (57 MLAs)</div>
-                                    <div class="custom-select-option" data-value="NCP(Ajit)">NCP – Ajit Pawar (41 MLAs)</div>
+                                    <div class="custom-select-option" data-value="BJP" data-label="BJP — Bharatiya Janata Party (132 MLAs)">
+                                        <span class="option-name">BJP — Bharatiya Janata Party</span>
+                                        <span class="option-badge mla-badge">132 MLAs</span>
+                                    </div>
+                                    <div class="custom-select-option" data-value="SS(Shinde)" data-label="Shiv Sena – Shinde (57 MLAs)">
+                                        <span class="option-name">Shiv Sena – Shinde</span>
+                                        <span class="option-badge mla-badge">57 MLAs</span>
+                                    </div>
+                                    <div class="custom-select-option" data-value="NCP(Ajit)" data-label="NCP – Ajit Pawar (41 MLAs)">
+                                        <span class="option-name">NCP – Ajit Pawar</span>
+                                        <span class="option-badge mla-badge">41 MLAs</span>
+                                    </div>
                                     
                                     <div class="custom-select-optgroup-label">MVA Alliance (2024 — 50 MLAs)</div>
-                                    <div class="custom-select-option" data-value="INC">INC — Indian National Congress (16 MLAs)</div>
-                                    <div class="custom-select-option" data-value="SS(UBT)">Shiv Sena – UBT / Uddhav (20 MLAs)</div>
-                                    <div class="custom-select-option" data-value="NCP(Sharad)">NCP – Sharad Pawar (10 MLAs)</div>
+                                    <div class="custom-select-option" data-value="SS(UBT)" data-label="Shiv Sena – UBT / Uddhav (20 MLAs)">
+                                        <span class="option-name">Shiv Sena – UBT / Uddhav</span>
+                                        <span class="option-badge mla-badge">20 MLAs</span>
+                                    </div>
+                                    <div class="custom-select-option" data-value="INC" data-label="INC — Indian National Congress (16 MLAs)">
+                                        <span class="option-name">INC — Indian National Congress</span>
+                                        <span class="option-badge mla-badge">16 MLAs</span>
+                                    </div>
+                                    <div class="custom-select-option" data-value="NCP(Sharad)" data-label="NCP – Sharad Pawar (10 MLAs)">
+                                        <span class="option-name">NCP – Sharad Pawar</span>
+                                        <span class="option-badge mla-badge">10 MLAs</span>
+                                    </div>
                                     
-                                    <div class="custom-select-optgroup-label">Legacy / Historical</div>
-                                    <div class="custom-select-option" data-value="SS">Shiv Sena (pre-2022 split)</div>
-                                    <div class="custom-select-option" data-value="NCP">NCP (pre-2023 split)</div>
+                                    <div class="custom-select-optgroup-label">Legacy &amp; Historical</div>
+                                    <div class="custom-select-option" data-value="SS" data-label="Shiv Sena (pre-2022 split)">
+                                        <span class="option-name">Shiv Sena</span>
+                                        <span class="option-badge legacy-badge">pre-2022</span>
+                                    </div>
+                                    <div class="custom-select-option" data-value="NCP" data-label="NCP (pre-2023 split)">
+                                        <span class="option-name">NCP</span>
+                                        <span class="option-badge legacy-badge">pre-2023</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -113,13 +140,22 @@
                             <div class="custom-select-backdrop" id="candidateSelectBackdrop"></div>
                             <div class="custom-options-list">
                                 <div class="custom-select-mobile-header">
-                                    <span>Candidate Type</span>
-                                    <button type="button" class="close-select-btn" data-target="candidateTypeWrapper">✕</button>
+                                    <div class="mobile-drag-handle"></div>
+                                    <div class="mobile-header-title-row">
+                                        <span>Candidate Type</span>
+                                        <button type="button" class="close-select-btn" data-target="candidateTypeWrapper">✕</button>
+                                    </div>
                                 </div>
                                 <div class="custom-options-scroll">
-                                    <div class="custom-select-option" data-value="new">New / First-time candidate</div>
-                                    <div class="custom-select-option" data-value="experienced">Experienced / Incumbent</div>
-                                    <div class="custom-select-option" data-value="mixed">Mixed (New & Experienced)</div>
+                                    <div class="custom-select-option" data-value="new" data-label="New / First-time candidate">
+                                        <span class="option-name">New / First-time candidate</span>
+                                    </div>
+                                    <div class="custom-select-option" data-value="experienced" data-label="Experienced / Incumbent">
+                                        <span class="option-name">Experienced / Incumbent</span>
+                                    </div>
+                                    <div class="custom-select-option" data-value="mixed" data-label="Mixed (New &amp; Experienced)">
+                                        <span class="option-name">Mixed (New &amp; Experienced)</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
