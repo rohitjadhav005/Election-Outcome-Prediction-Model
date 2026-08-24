@@ -425,20 +425,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const backdrop = wrapper.querySelector('.custom-select-backdrop');
         const closeBtn = wrapper.querySelector('.close-select-btn');
 
+        // Helper to close wrapper and its form group
+        const closeWrapper = (w) => {
+            w.classList.remove('open');
+            w.closest('.form-group')?.classList.remove('dropdown-open');
+            const bd = w.querySelector('.custom-select-backdrop');
+            if (bd) bd.classList.remove('show');
+        };
+
         // Toggle open/close
         trigger.addEventListener('click', (e) => {
             e.stopPropagation();
             const isOpen = wrapper.classList.contains('open');
             
             // Close all others
-            document.querySelectorAll('.custom-select-wrapper').forEach(w => {
-                w.classList.remove('open');
-                const bd = w.querySelector('.custom-select-backdrop');
-                if (bd) bd.classList.remove('show');
-            });
+            document.querySelectorAll('.custom-select-wrapper').forEach(w => closeWrapper(w));
 
             if (!isOpen) {
                 wrapper.classList.add('open');
+                wrapper.closest('.form-group')?.classList.add('dropdown-open');
                 if (backdrop) backdrop.classList.add('show');
             }
         });
@@ -447,8 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (backdrop) {
             backdrop.addEventListener('click', (e) => {
                 e.stopPropagation();
-                wrapper.classList.remove('open');
-                backdrop.classList.remove('show');
+                closeWrapper(wrapper);
             });
         }
 
@@ -456,8 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (closeBtn) {
             closeBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                wrapper.classList.remove('open');
-                if (backdrop) backdrop.classList.remove('show');
+                closeWrapper(wrapper);
             });
         }
 
@@ -478,8 +481,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 option.classList.add('selected');
 
                 // Close dropdown
-                wrapper.classList.remove('open');
-                if (backdrop) backdrop.classList.remove('show');
+                closeWrapper(wrapper);
                 
                 // Trigger change logic
                 if (hiddenInput.id === 'partyName') {
@@ -489,11 +491,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Close when clicking outside (desktop)
+    // Close when clicking outside (desktop & mobile)
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.custom-select-wrapper')) {
             document.querySelectorAll('.custom-select-wrapper').forEach(w => {
                 w.classList.remove('open');
+                w.closest('.form-group')?.classList.remove('dropdown-open');
                 const bd = w.querySelector('.custom-select-backdrop');
                 if (bd) bd.classList.remove('show');
             });
