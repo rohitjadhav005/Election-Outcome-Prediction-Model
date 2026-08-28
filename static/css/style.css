@@ -793,6 +793,13 @@ body {
     padding: 20px 0;
 }
 
+#formSection,
+#predictionForm,
+#startPredictionContainer,
+#resultSection {
+    scroll-margin-top: 85px;
+}
+
 .form-card,
 .result-card {
     padding: 44px 48px;
@@ -804,10 +811,10 @@ body {
     border: 1.5px solid rgba(255, 255, 255, 0.98);
     border-radius: var(--radius-xl);
     box-shadow:
-        0 24px 64px rgba(6, 12, 26, 0.28),
-        0 0 0 1px rgba(30, 58, 138, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 1);
+        0 24px 64px rgba(6, 12, 26, 0.22),
+        0 0 0 1px rgba(30, 58, 138, 0.08);
     overflow: visible;
+    box-sizing: border-box;
 }
 
 .form-grid {
@@ -815,6 +822,8 @@ body {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px 24px;
     margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .form-group.full-width {
@@ -836,15 +845,18 @@ body {
 
     .form-card,
     .result-card {
-        padding: 24px 16px;
-        border-radius: 1.5rem;
+        padding: 24px 18px;
+        border-radius: 1.4rem;
         backdrop-filter: blur(16px) saturate(150%);
         -webkit-backdrop-filter: blur(16px) saturate(150%);
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .form-grid {
         grid-template-columns: 1fr;
         gap: 14px;
+        width: 100%;
     }
 
     .form-label {
@@ -856,21 +868,15 @@ body {
         font-size: 16px;
         /* prevents iOS zoom on focus */
         padding: 13px 14px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 }
 
 .form-card::after,
 .result-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: rgba(255, 255, 255, 0.12);
-    box-shadow: inset -10px -8px 0px -11px rgba(255, 255, 255, 1),
-        inset 0px -9px 0px -8px rgba(255, 255, 255, 1);
-    opacity: 0.55;
-    z-index: 1;
-    pointer-events: none;
+    display: none;
 }
 
 @keyframes fadeUp {
@@ -2380,7 +2386,7 @@ body {
 }
 
 /* ===================================
-   MOBILE SMOOTH SCROLLING OPTIMIZATIONS
+   MOBILE RESPONSIVE & SMOOTH SCROLLING OPTIMIZATIONS
    =================================== */
 @media (max-width: 768px) {
     html, body {
@@ -2388,19 +2394,62 @@ body {
         overscroll-behavior-y: contain;
     }
 
-    /* Disable GPU-heavy realtime blurs on mobile screens for smooth 60fps touch momentum scroll */
-    .glass-panel,
-    .form-card,
-    .result-card,
-    .hero-stats,
-    .quick-insights-bar,
-    .footer {
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
+    .navbar {
+        background: rgba(6, 12, 26, 0.94) !important;
+        backdrop-filter: blur(20px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    .container {
+        padding: 12px 10px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .form-section,
+    .result-section {
+        padding: 12px 0 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     .form-card,
     .result-card {
+        padding: 22px 14px !important;
+        border-radius: 20px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        margin: 0 auto !important;
         background: rgba(255, 255, 255, 0.98) !important;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .form-group {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .custom-select-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .custom-select-trigger,
+    .form-input {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
     }
 }

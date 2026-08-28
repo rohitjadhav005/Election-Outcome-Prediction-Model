@@ -138,14 +138,14 @@ PARTY_LOGOS = {
 
 # Party descriptions (includes split factions)
 PARTY_DESCRIPTIONS = {
-    'BJP':          'Bharatiya Janata Party — Leading party in Mahayuti alliance (132 MLAs, 2024)',
-    'INC':          'Indian National Congress — Part of MVA alliance (16 MLAs, 2024)',
+    'BJP':          'Bharatiya Janata Party — Leading party in Mahayuti alliance',
+    'INC':          'Indian National Congress — Part of MVA alliance',
     'NCP':          'Nationalist Congress Party — Regional party (pre-2023 split)',
-    'NCP(Ajit)':   'NCP (Ajit Pawar faction) — Part of Mahayuti alliance (41 MLAs, 2024)',
-    'NCP(Sharad)': 'NCP (Sharad Pawar faction) — Part of MVA alliance (10 MLAs, 2024)',
+    'NCP(Ajit)':   'NCP (Ajit Pawar faction) — Part of Mahayuti alliance',
+    'NCP(Sharad)': 'NCP (Sharad Pawar faction) — Part of MVA alliance',
     'SS':           'Shiv Sena — Maharashtra party (pre-2022 split)',
-    'SS(Shinde)':  'Shiv Sena (Eknath Shinde) — Part of Mahayuti alliance (57 MLAs, 2024)',
-    'SS(UBT)':     'Shiv Sena (UBT / Uddhav Thackeray) — Part of MVA alliance (20 MLAs, 2024)',
+    'SS(Shinde)':  'Shiv Sena (Eknath Shinde) — Part of Mahayuti alliance',
+    'SS(UBT)':     'Shiv Sena (UBT / Uddhav Thackeray) — Part of MVA alliance',
     'Shiv Sena':   'Shiv Sena — Maharashtra regional party',
     'Independent': 'Independent Candidates'
 }

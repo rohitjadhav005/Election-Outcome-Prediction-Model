@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
 {% block title %}Election Outcome Predictor | AI Electoral Forecasting{% endblock %}
-{% block meta_description %}Predict Maharashtra Assembly & Electoral outcomes using AI-powered analysis of MLA strength and 1952-2024 historical election data{% endblock %}
+{% block meta_description %}Predict Maharashtra Assembly & Electoral outcomes using AI-powered analysis of MLA strength
+and 1952-2024 historical election data{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -39,15 +40,21 @@
     <!-- Prediction Form Card  -->
     <section class="form-section" id="formSection">
         <div class="form-card glass-panel">
-            
+
             <!-- Form Opening Toggle CTA Banner -->
-            <div id="startPredictionContainer" class="start-prediction-container" style="text-align: center; padding: 15px 10px;">
-                <h2 class="form-title" style="font-size: 2.1rem; margin-bottom: 12px; font-family: 'Plus Jakarta Sans', sans-serif;">Predict 2027 Electoral Outcome</h2>
-                <p class="form-description" style="max-width: 520px; margin: 0 auto 28px; font-size: 1.05rem; line-height: 1.6;">
-                    Calculate Maharashtra Assembly win probabilities using party strength, MLA counts, and 72 years of historical election data.
+            <div id="startPredictionContainer" class="start-prediction-container"
+                style="text-align: center; padding: 15px 10px;">
+                <h2 class="form-title"
+                    style="font-size: 2.1rem; margin-bottom: 12px; font-family: 'Plus Jakarta Sans', sans-serif;">
+                    Predict 2027 Electoral Outcome</h2>
+                <p class="form-description"
+                    style="max-width: 520px; margin: 0 auto 28px; font-size: 1.05rem; line-height: 1.6;">
+                    Calculate Maharashtra Assembly win probabilities using party strength, MLA counts, and 72 years of
+                    historical election data.
                 </p>
                 <div style="display: flex; justify-content: center;">
-                    <button type="button" id="startPredictionBtn" class="submit-btn" style="display: inline-flex; width: auto; padding: 16px 42px; font-size: 1.1rem;">
+                    <button type="button" id="startPredictionBtn" class="submit-btn"
+                        style="display: inline-flex; width: auto; padding: 16px 42px; font-size: 1.1rem;">
                         <span class="btn-text">Calculate Win Probability</span>
                     </button>
                 </div>
@@ -69,47 +76,57 @@
                             <div class="custom-select-trigger" tabindex="0">
                                 <span class="custom-select-text placeholder-text">Select a party</span>
                                 <div class="custom-select-icon">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
                                 </div>
                             </div>
                             <div class="custom-options-list">
                                 <div class="custom-options-scroll">
-                                    <div class="custom-select-optgroup-label">Mahayuti Alliance (2024 • 235 MLAs)</div>
-                                    <div class="custom-select-option" data-value="BJP" data-label="BJP — Bharatiya Janata Party (132 MLAs)">
+                                    <div class="custom-select-optgroup-label">Mahayuti Alliance</div>
+                                    <div class="custom-select-option" data-value="BJP"
+                                        data-label="BJP — Bharatiya Janata Party">
                                         <span class="option-name">BJP — Bharatiya Janata Party</span>
-                                        <span class="option-badge mla-badge">132 MLAs</span>
+
                                     </div>
-                                    <div class="custom-select-option" data-value="SS(Shinde)" data-label="Shiv Sena – Shinde (57 MLAs)">
+                                    <div class="custom-select-option" data-value="SS(Shinde)"
+                                        data-label="Shiv Sena — Shinde">
                                         <span class="option-name">Shiv Sena — Shinde</span>
-                                        <span class="option-badge mla-badge">57 MLAs</span>
+
                                     </div>
-                                    <div class="custom-select-option" data-value="NCP(Ajit)" data-label="NCP – Ajit Pawar (41 MLAs)">
+                                    <div class="custom-select-option" data-value="NCP(Ajit)"
+                                        data-label="NCP — Ajit Pawar">
                                         <span class="option-name">NCP — Ajit Pawar</span>
-                                        <span class="option-badge mla-badge">41 MLAs</span>
+
                                     </div>
-                                    
-                                    <div class="custom-select-optgroup-label">MVA Alliance (2024 • 50 MLAs)</div>
-                                    <div class="custom-select-option" data-value="SS(UBT)" data-label="Shiv Sena – UBT / Uddhav (20 MLAs)">
-                                        <span class="option-name">Shiv Sena — UBT / Uddhav</span>
-                                        <span class="option-badge mla-badge">20 MLAs</span>
+
+                                    <div class="custom-select-optgroup-label">MVA Alliance</div>
+                                    <div class="custom-select-option" data-value="SS(UBT)"
+                                        data-label="Shiv Sena — UBT">
+                                        <span class="option-name">Shiv Sena — UBT</span>
+
                                     </div>
-                                    <div class="custom-select-option" data-value="INC" data-label="INC — Indian National Congress (16 MLAs)">
+                                    <div class="custom-select-option" data-value="INC"
+                                        data-label="INC — Indian National Congress">
                                         <span class="option-name">INC — Indian National Congress</span>
-                                        <span class="option-badge mla-badge">16 MLAs</span>
+
                                     </div>
-                                    <div class="custom-select-option" data-value="NCP(Sharad)" data-label="NCP – Sharad Pawar (10 MLAs)">
+                                    <div class="custom-select-option" data-value="NCP(Sharad)"
+                                        data-label="NCP — Sharad Pawar">
                                         <span class="option-name">NCP — Sharad Pawar</span>
-                                        <span class="option-badge mla-badge">10 MLAs</span>
+
                                     </div>
-                                    
+
                                     <div class="custom-select-optgroup-label">Legacy &amp; Historical</div>
-                                    <div class="custom-select-option" data-value="SS" data-label="Shiv Sena (pre-2022 split)">
+                                    <div class="custom-select-option" data-value="SS"
+                                        data-label="Shiv Sena (pre-2022)">
                                         <span class="option-name">Shiv Sena (pre-2022)</span>
-                                        <span class="option-badge legacy-badge">pre-2022</span>
                                     </div>
-                                    <div class="custom-select-option" data-value="NCP" data-label="NCP (pre-2023 split)">
+                                    <div class="custom-select-option" data-value="NCP"
+                                        data-label="NCP (pre-2023)">
                                         <span class="option-name">NCP (pre-2023)</span>
-                                        <span class="option-badge legacy-badge">pre-2023</span>
                                     </div>
                                 </div>
                             </div>
@@ -126,18 +143,25 @@
                             <div class="custom-select-trigger" tabindex="0">
                                 <span class="custom-select-text placeholder-text">Select candidate type</span>
                                 <div class="custom-select-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
                                 </div>
                             </div>
                             <div class="custom-options-list">
                                 <div class="custom-options-scroll">
-                                    <div class="custom-select-option" data-value="new" data-label="New / First-time candidate">
+                                    <div class="custom-select-option" data-value="new"
+                                        data-label="New / First-time candidate">
                                         <span class="option-name">New / First-time candidate</span>
                                     </div>
-                                    <div class="custom-select-option" data-value="experienced" data-label="Experienced / Incumbent">
+                                    <div class="custom-select-option" data-value="experienced"
+                                        data-label="Experienced / Incumbent">
                                         <span class="option-name">Experienced / Incumbent</span>
                                     </div>
-                                    <div class="custom-select-option" data-value="mixed" data-label="Mixed (New &amp; Experienced)">
+                                    <div class="custom-select-option" data-value="mixed"
+                                        data-label="Mixed (New &amp; Experienced)">
                                         <span class="option-name">Mixed (New &amp; Experienced)</span>
                                     </div>
                                 </div>
@@ -150,8 +174,8 @@
                         <label for="mlaStrength" class="form-label">
                             <span class="label-text">Party MLA Count</span>
                         </label>
-                        <input type="number" id="mlaStrength" name="mla_strength" class="form-input" placeholder="e.g. 132"
-                            min="0" max="288" required>
+                        <input type="number" id="mlaStrength" name="mla_strength" class="form-input"
+                            placeholder="e.g. 132" min="0" max="288" required>
                         <small class="field-hint">MLAs held in Maharashtra Assembly (max 288)</small>
                     </div>
 
@@ -162,12 +186,13 @@
                         </label>
                         <input type="number" id="allianceMlaStrength" name="alliance_mla_strength" class="form-input"
                             placeholder="e.g. 235" min="0" max="288" required>
-                        
+
                         <!-- Soft Majority Indicator -->
                         <div class="majority-container">
                             <div class="majority-label-row">
                                 <span>Majority Signal</span>
-                                <span class="majority-status-text status-weak" id="majorityStatus">Below Threshold</span>
+                                <span class="majority-status-text status-weak" id="majorityStatus">Below
+                                    Threshold</span>
                             </div>
                             <div class="majority-bar-bg">
                                 <div class="majority-bar-fill" id="majorityBarFill"></div>
@@ -181,8 +206,8 @@
                         <label for="pastRsWins" class="form-label">
                             <span class="label-text">Historical Seat Wins</span>
                         </label>
-                        <input type="number" id="pastRsWins" name="past_rs_wins" class="form-input" placeholder="e.g. 15"
-                            min="0" required>
+                        <input type="number" id="pastRsWins" name="past_rs_wins" class="form-input"
+                            placeholder="e.g. 15" min="0" required>
                         <small class="field-hint">Historical seats won by party in prior elections</small>
                     </div>
 

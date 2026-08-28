@@ -34,7 +34,7 @@ function setupFormToggle() {
         startBtn.addEventListener('click', () => {
             startContainer.classList.add('hidden');
             predForm.classList.remove('hidden');
-            predForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            predForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
     }
 }
