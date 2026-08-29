@@ -33,22 +33,29 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Only cache GET requests
+  // Only cache GET requests with http/https schemes
   if (event.request.method !== 'GET') return;
+  if (!event.request.url.startsWith('http://') && !event.request.url.startsWith('https://')) return;
 
-  // Network-First Strategy 
-  // Always fetch latest from server so users don't have to reload for updates
+  // Network-First Strategy
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Save the successful network response to cache
-        return caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, response.clone());
-          return response;
-        });
+        // Save valid 200 responses to cache safely
+        if (response && response.status === 200 && response.type === 'basic') {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            try {
+              cache.put(event.request, responseToCache);
+            } catch (err) {
+              /* ignore cache write errors for non-cacheable items */
+            }
+          }).catch(() => {});
+        }
+        return response;
       })
       .catch(() => {
-        // If network fails (e.g., offline), fallback to the cache
+        // Fallback to cache if network fails (e.g. offline)
         return caches.match(event.request);
       })
   );

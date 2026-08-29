@@ -97,8 +97,8 @@ function createPartyCard(party) {
             </div>
             <div class="party-detail-item">
                 <span class="party-detail-label">Weighted Win Rate:</span>
-                <span class="party-detail-value" style="color: ${party.win_rate >= 70 ? 'var(--navy)' : party.win_rate <= 20 ? 'var(--saffron-dim)' : 'var(--saffron)'}; font-weight: 700;">
-                    ${party.win_rate.toFixed(1)}%
+                <span class="party-detail-value" style="color: ${(party.win_rate ?? 0) >= 70 ? 'var(--navy)' : (party.win_rate ?? 0) <= 20 ? 'var(--saffron-dim)' : 'var(--saffron)'}; font-weight: 700;">
+                    ${(party.win_rate ?? 0).toFixed(1)}%
                 </span>
             </div>
         </div>

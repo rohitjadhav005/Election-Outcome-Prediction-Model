@@ -298,11 +298,26 @@ function mountGrainient(container, opts = {}) {
   }
 
   function tryStart() {
-    if (isVisible && isPageVisible && raf === 0) raf = requestAnimationFrame(loop);
+    if (isVisible && isPageVisible && !isScrolling && raf === 0) raf = requestAnimationFrame(loop);
   }
   function tryStop() {
     if (raf !== 0) { cancelAnimationFrame(raf); raf = 0; }
   }
+
+  function onScroll() {
+    isScrolling = true;
+    tryStop();
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      isScrolling = false;
+      tryStart();
+    }, 150);
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('touchstart', onScroll, { passive: true });
+  window.addEventListener('touchmove', onScroll, { passive: true });
+  window.addEventListener('touchend', onScroll, { passive: true });
 
   const io = new IntersectionObserver(([entry]) => {
     isVisible = entry.isIntersecting;
@@ -321,6 +336,7 @@ function mountGrainient(container, opts = {}) {
   // Return teardown
   return function stop() {
     tryStop();
+    clearTimeout(scrollTimeout);
     ro.disconnect();
     io.disconnect();
     document.removeEventListener('visibilitychange', onVisibility);

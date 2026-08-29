@@ -24,6 +24,15 @@ const PARTY_DEFAULTS = {
     'NCP':         { mla: 71,  alliance: 141, wins: 9,  type: 'experienced' }
 };
 
+function safeScrollIntoView(el, options = { behavior: 'smooth', block: 'start' }) {
+    if (!el) return;
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            el.scrollIntoView(options);
+        });
+    });
+}
+
 // ── Toggle form visibility ────────────────────────────────────
 function setupFormToggle() {
     const startBtn = document.getElementById('startPredictionBtn');
@@ -34,7 +43,7 @@ function setupFormToggle() {
         startBtn.addEventListener('click', () => {
             startContainer.classList.add('hidden');
             predForm.classList.remove('hidden');
-            predForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            safeScrollIntoView(predForm, { behavior: 'smooth', block: 'start' });
         });
     }
 }
@@ -94,45 +103,47 @@ function autoSelectParty() {
 }
 
 // ── Form submission ───────────────────────────────────────────
-form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    hideError();
+if (form) {
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        hideError();
 
-    const formData = new FormData(form);
-    const payload = {
-        party_name: formData.get('party_name'),
-        mla_strength: formData.get('mla_strength'),
-        alliance_mla_strength: formData.get('alliance_mla_strength'),
-        past_rs_wins: formData.get('past_rs_wins'),
-        candidate_type: formData.get('candidate_type')
-    };
+        const formData = new FormData(form);
+        const payload = {
+            party_name: formData.get('party_name'),
+            mla_strength: formData.get('mla_strength'),
+            alliance_mla_strength: formData.get('alliance_mla_strength'),
+            past_rs_wins: formData.get('past_rs_wins'),
+            candidate_type: formData.get('candidate_type')
+        };
 
-    if (!validateForm(payload)) return;
+        if (!validateForm(payload)) return;
 
-    setLoadingState(true);
+        setLoadingState(true);
 
-    try {
-        const response = await fetch('/predict', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+        try {
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
 
-        const result = await response.json();
-        setLoadingState(false);
+            const result = await response.json();
+            setLoadingState(false);
 
-        if (result.success) {
-            displayResult(result, payload);
-        } else {
-            showError(result.error || 'An error occurred. Please try again.');
+            if (result.success) {
+                displayResult(result, payload);
+            } else {
+                showError(result.error || 'An error occurred. Please try again.');
+            }
+
+        } catch (err) {
+            setLoadingState(false);
+            showError('Unable to connect to the server. Please try again.');
+            console.error('Fetch error:', err);
         }
-
-    } catch (err) {
-        setLoadingState(false);
-        showError('Unable to connect to the server. Please try again.');
-        console.error('Fetch error:', err);
-    }
-});
+    });
+}
 
 // ── Validation ────────────────────────────────────────────────
 function validateForm(data) {
@@ -199,9 +210,11 @@ function displayResult(result, payload) {
     }
 
     // Swap form → result
-    formSection.classList.add('hidden');
-    resultSection.classList.remove('hidden');
-    resultSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (formSection) formSection.classList.add('hidden');
+    if (resultSection) {
+        resultSection.classList.remove('hidden');
+        safeScrollIntoView(resultSection, { behavior: 'smooth', block: 'center' });
+    }
 }
 
 // ── Highlights Logic ──────────────────────────────────────────
@@ -316,38 +329,44 @@ async function fetchAndDisplayPartyInfo(partyName) {
 
 // ── UI helpers ────────────────────────────────────────────────
 function showError(msg) {
+    if (!errorMessage) return;
     errorMessage.textContent = msg;
     errorMessage.classList.remove('hidden');
-    errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    safeScrollIntoView(errorMessage, { behavior: 'smooth', block: 'center' });
 }
 
 function hideError() {
+    if (!errorMessage) return;
     errorMessage.classList.add('hidden');
     errorMessage.textContent = '';
 }
 
 function setLoadingState(loading) {
+    if (!submitBtn) return;
     submitBtn.disabled = loading;
     submitBtn.classList.toggle('loading', loading);
-    submitBtn.querySelector('.btn-text').textContent = loading ? 'Processing' : 'Predict Outcome';
+    const textSpan = submitBtn.querySelector('.btn-text');
+    if (textSpan) textSpan.textContent = loading ? 'Processing' : 'Predict Outcome';
 }
 
 function resetForm() {
-    form.reset();
-    resultSection.classList.add('hidden');
-    formSection.classList.remove('hidden');
+    if (form) form.reset();
+    if (resultSection) resultSection.classList.add('hidden');
+    if (formSection) formSection.classList.remove('hidden');
     
     // Reset toggle state
     if (startPredictionContainer) {
         startPredictionContainer.classList.remove('hidden');
-        form.classList.add('hidden');
+        if (form) form.classList.add('hidden');
     }
 
     hideError();
-    document.getElementById('confidenceFill').style.width = '0%';
-    document.getElementById('partyInfoBox').classList.add('hidden');
+    const confFill = document.getElementById('confidenceFill');
+    if (confFill) confFill.style.width = '0%';
+    const pInfoBox = document.getElementById('partyInfoBox');
+    if (pInfoBox) pInfoBox.classList.add('hidden');
     document.querySelector('.result-card')?.classList.remove('win', 'lose');
-    formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (formSection) safeScrollIntoView(formSection, { behavior: 'smooth', block: 'start' });
 }
 
 // ── Input enhancements ────────────────────────────────────────
@@ -491,7 +510,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Close when clicking outside (desktop & mobile)
+    // Close when clicking outside or scrolling
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.custom-select-wrapper')) {
             document.querySelectorAll('.custom-select-wrapper').forEach(w => {
@@ -503,9 +522,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    window.addEventListener('scroll', () => {
+        document.querySelectorAll('.custom-select-wrapper.open').forEach(w => {
+            w.classList.remove('open');
+            w.closest('.form-group')?.classList.remove('dropdown-open');
+            const bd = w.querySelector('.custom-select-backdrop');
+            if (bd) bd.classList.remove('show');
+        });
+    }, { passive: true });
+
 });
 
 // Prevent accidental Enter submission
-form.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') e.preventDefault();
-});
+if (form) {
+    form.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') e.preventDefault();
+    });
+}
